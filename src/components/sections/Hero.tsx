@@ -167,8 +167,10 @@ export default function Hero() {
           </a>
           <a
             href={meta.resume}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-lavender/30 hover:text-pink-soft transition-colors duration-200"
-            aria-label="Download resume"
+            aria-label="View Resume"
           >
             <FileText size={18} />
           </a>

@@ -12,5 +12,5 @@ export const meta = {
   github: 'https://github.com/Shivangid2904',
   linkedin: 'https://www.linkedin.com/in/shivangi-dubey-1783511a6/',
   email: 'shivangi.d2904@gmail.com',
-  resume: '#', // update when available
+  resume: 'https://drive.google.com/file/d/1lCXme23zL50PrehgWtcn2wvx_QKc_ObN/view',
 }
