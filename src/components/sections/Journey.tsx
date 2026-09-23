@@ -14,9 +14,9 @@ interface TimelineItem {
 const timeline: TimelineItem[] = [
   {
     emoji: '🎓',
-    title: 'SRM University-AP',
-    subtitle: 'B.Tech — Computer Science & Engineering, AI & ML Specialisation',
-    period: '2023 — May 2027 (expected)',
+    title: 'SRM University AP',
+    subtitle: 'B.Tech, Computer Science & Engineering, AI & ML Specialisation',
+    period: '2023 to May 2027 (expected)',
     note: 'CGPA: 9.24 / 10',
     tag: 'Education',
   },
@@ -29,9 +29,9 @@ const timeline: TimelineItem[] = [
   },
   {
     emoji: '🌷',
-    title: 'Convenor — Smart Tech Club',
-    subtitle: 'SRM University-AP',
-    period: 'August 2025 – May 2026',
+    title: 'Convenor, Smart Tech Club',
+    subtitle: 'SRM University AP',
+    period: 'August 2025 to May 2026',
     bullets: [
       'Led the student technical community and club initiatives as Convenor',
       'Organised technical workshops covering AI/ML, Cloud, and Cybersecurity',
@@ -41,9 +41,9 @@ const timeline: TimelineItem[] = [
   },
   {
     emoji: '🎨',
-    title: 'Design Intern — Back and Forth Pvt. Ltd.',
+    title: 'Design Intern, Back and Forth Pvt. Ltd.',
     subtitle: 'Unipool (ride-sharing product)',
-    period: 'May – July 2025',
+    period: 'May to July 2025',
     bullets: [
       'Designed and developed Unipool\'s ride-sharing prototype interface',
       'Built reusable UI components with HTML, CSS, and Tailwind CSS',

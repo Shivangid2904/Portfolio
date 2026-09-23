@@ -10,7 +10,7 @@ const curiosities = [
   {
     emoji: '🌫️',
     title: 'Model uncertainty and explainability',
-    body: "SHAP was my entry point with ExoLife, but I'm curious about calibration, conformal prediction, and how to make ML models honest about what they don't know — especially when the stakes matter.",
+    body: "SHAP was my entry point with ExoLife, but I'm curious about calibration, conformal prediction, and how to make ML models honest about what they don't know, especially when the stakes matter.",
   },
   {
     emoji: '🔭',
@@ -30,7 +30,7 @@ export default function Exploring() {
       <div className="max-w-6xl mx-auto">
         <SectionHeading
           title="Currently Curious About"
-          subtitle="things I'm exploring — not claiming to have mastered"
+          subtitle="things I'm exploring, not claiming to have mastered"
           accent="✦ exploring"
         />
 

@@ -46,7 +46,7 @@ export default function Toolkit() {
           transition={{ delay: 0.4 }}
           className="mt-10 font-body text-xs text-lavender/25 text-center italic"
         >
-          I'm more comfortable with some of these than others — always learning.
+          I'm more comfortable with some of these than others, always learning.
         </motion.p>
       </div>
     </section>

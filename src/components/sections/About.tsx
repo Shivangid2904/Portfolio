@@ -30,10 +30,10 @@ export default function About() {
             <div className="space-y-5 font-body text-[15px] leading-relaxed text-lavender/65">
               <p>
                 I'm a Computer Science student at SRM University AP, specialising in AI & Machine Learning.
-                My work sits somewhere across ML, data, cloud systems, and occasionally — datasets about distant planets.
+                My work sits somewhere across ML, data, cloud systems, and occasionally datasets about distant planets.
               </p>
               <p>
-                I like building things that start from a question. Not "what can I add to my resume" — but
+                I like building things that start from a question. Not "what can I add to my resume", but
                 genuinely, <em className="text-lavender/80 italic">"I wonder if this is possible."</em> That curiosity
                 is usually what gets a project started.
               </p>
@@ -43,7 +43,7 @@ export default function About() {
                 which is equal parts frustrating and fascinating.
               </p>
               <p>
-                Outside of code, I care a lot about interfaces that feel human — which is probably why I ended up
+                Outside of code, I care a lot about interfaces that feel human, which is probably why I ended up
                 doing design work at Unipool and served as Convenor of Smart Tech Club.
               </p>
             </div>
@@ -75,7 +75,7 @@ export default function About() {
               {[
                 { label: 'Degree', value: 'B.Tech, Computer Science & Engineering' },
                 { label: 'Specialisation', value: 'AI & Machine Learning' },
-                { label: 'University', value: 'SRM University-AP' },
+                { label: 'University', value: 'SRM University AP' },
                 { label: 'CGPA', value: '9.24 / 10' },
                 { label: 'Expected Graduation', value: 'May 2027' },
                 { label: 'Certification', value: 'AWS Certified Cloud Practitioner (2026)' },

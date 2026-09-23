@@ -97,7 +97,7 @@ export default function Hero() {
           className="font-body text-sm md:text-lg text-lavender/85 max-w-xl leading-relaxed mb-10"
         >
           CS student at SRM University AP, specialising in AI & Machine Learning.
-          I explore machine learning, cloud systems, data analytics, and occasionally — distant planets.
+          I explore machine learning, cloud systems, data analytics, and occasionally distant planets.
         </motion.p>
 
         {/* Subtle metadata */}
