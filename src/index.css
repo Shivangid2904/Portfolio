@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ─────────────────────────────────── */
+:root {
+  --bg-deep: #0B0812;
+  --bg-base: #100B1C;
+  --bg-card: #161224;
+  --pink-soft: #F4A7BB;
+  --pink-rose: #FFB7D5;
+  --lavender: #D8B4E2;
+  --purple-soft: #C084FC;
+  --purple-lilac: #E9D5FF;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-deep);
+  color: var(--purple-lilac);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ─── Typography utilities ───────────────────────────────────── */
+.font-display {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ─── Selection ──────────────────────────────────────────────── */
+::selection {
+  background: rgba(244, 167, 187, 0.25);
+  color: #E9D5FF;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(216, 180, 226, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 167, 187, 0.25);
+}
+
+/* ─── Focus styles ───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgba(244, 167, 187, 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Tailwind color extensions (Tailwind 3 JIT workaround) ──── */
+.text-pink-soft { color: #F4A7BB; }
+.text-pink-rose { color: #FFB7D5; }
+.text-lavender { color: #D8B4E2; }
+.text-purple-soft { color: #C084FC; }
+.text-purple-lilac { color: #E9D5FF; }
+
+.bg-deep { background-color: #0B0812; }
+.bg-base { background-color: #100B1C; }
+.bg-card { background-color: #161224; }
+.bg-pink-soft\/8 { background-color: rgba(244, 167, 187, 0.08); }
+.bg-pink-soft\/10 { background-color: rgba(244, 167, 187, 0.10); }
+.bg-lavender\/4 { background-color: rgba(216, 180, 226, 0.04); }
+.bg-lavender\/5 { background-color: rgba(216, 180, 226, 0.05); }
+.bg-lavender\/8 { background-color: rgba(216, 180, 226, 0.08); }
+
+.border-pink-soft\/15 { border-color: rgba(244, 167, 187, 0.15); }
+.border-pink-soft\/25 { border-color: rgba(244, 167, 187, 0.25); }
+.border-pink-soft\/30 { border-color: rgba(244, 167, 187, 0.30); }
+.border-pink-soft\/40 { border-color: rgba(244, 167, 187, 0.40); }
+.border-pink-soft\/50 { border-color: rgba(244, 167, 187, 0.50); }
+.border-lavender\/6 { border-color: rgba(216, 180, 226, 0.06); }
+.border-lavender\/8 { border-color: rgba(216, 180, 226, 0.08); }
+.border-lavender\/10 { border-color: rgba(216, 180, 226, 0.10); }
+.border-lavender\/12 { border-color: rgba(216, 180, 226, 0.12); }
+.border-lavender\/15 { border-color: rgba(216, 180, 226, 0.15); }
+.border-lavender\/20 { border-color: rgba(216, 180, 226, 0.20); }
+.border-lavender\/30 { border-color: rgba(216, 180, 226, 0.30); }
+.border-lavender\/40 { border-color: rgba(216, 180, 226, 0.40); }
+
+.text-lavender\/25 { color: rgba(216, 180, 226, 0.25); }
+.text-lavender\/30 { color: rgba(216, 180, 226, 0.30); }
+.text-lavender\/35 { color: rgba(216, 180, 226, 0.35); }
+.text-lavender\/40 { color: rgba(216, 180, 226, 0.40); }
+.text-lavender\/45 { color: rgba(216, 180, 226, 0.45); }
+.text-lavender\/50 { color: rgba(216, 180, 226, 0.50); }
+.text-lavender\/55 { color: rgba(216, 180, 226, 0.55); }
+.text-lavender\/60 { color: rgba(216, 180, 226, 0.60); }
+.text-lavender\/65 { color: rgba(216, 180, 226, 0.65); }
+.text-lavender\/70 { color: rgba(216, 180, 226, 0.70); }
+.text-lavender\/75 { color: rgba(216, 180, 226, 0.75); }
+.text-lavender\/80 { color: rgba(216, 180, 226, 0.80); }
+
+.text-pink-soft\/40 { color: rgba(244, 167, 187, 0.40); }
+.text-pink-soft\/50 { color: rgba(244, 167, 187, 0.50); }
+.text-pink-soft\/60 { color: rgba(244, 167, 187, 0.60); }
+.text-pink-soft\/70 { color: rgba(244, 167, 187, 0.70); }
+.text-pink-soft\/90 { color: rgba(244, 167, 187, 0.90); }
+
+/* ─── Reduced Motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ─── Custom animations ──────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2.5s ease-in-out infinite;
+}
+
+/* ─── Section dividers ───────────────────────────────────────── */
+section + section {
+  border-top: 1px solid rgba(216, 180, 226, 0.05);
+}
