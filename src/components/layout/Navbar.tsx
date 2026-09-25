@@ -36,15 +36,57 @@ export default function Navbar() {
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between" role="navigation" aria-label="Main navigation">
-        {/* Logo / name */}
+        {/* Personal visual signature — Saturn mark */}
         <a
           href="#home"
           onClick={(e) => { e.preventDefault(); handleNavClick('#home') }}
-          className="font-display text-xl text-purple-lilac hover:text-pink-soft transition-colors duration-200"
-          aria-label="Go to top"
+          className="group flex items-center text-purple-lilac hover:text-pink-soft transition-colors duration-200"
+          aria-label="Home"
         >
-          Shivangi<span className="text-pink-soft">.</span>
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            className="transition-transform duration-200 group-hover:scale-105"
+            aria-hidden="true"
+          >
+            <g transform="rotate(-26 12 12)">
+              {/* Back of ring */}
+              <path
+                d="M 2 12 A 10 3.2 0 0 1 22 12"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeOpacity="0.45"
+              />
+              {/* Planet body */}
+              <circle
+                cx="12"
+                cy="12"
+                r="5.2"
+                fill="var(--bg-deep, #0B0812)"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <circle
+                cx="12"
+                cy="12"
+                r="5.2"
+                fill="currentColor"
+                fillOpacity="0.12"
+              />
+              {/* Front of ring */}
+              <path
+                d="M 22 12 A 10 3.2 0 0 1 2 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </g>
+          </svg>
         </a>
+
 
         {/* Desktop links */}
         <ul className="hidden md:flex items-center gap-8" role="list">
