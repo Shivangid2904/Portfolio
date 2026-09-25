@@ -181,6 +181,6 @@ body {
 }
 
 /* ─── Section dividers ───────────────────────────────────────── */
-section + section {
+section:not(:first-of-type) {
   border-top: 1px solid rgba(216, 180, 226, 0.05);
 }

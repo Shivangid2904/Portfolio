@@ -1,4 +1,5 @@
 import StarField from './components/ui/StarField'
+import SpaceTransition from './components/ui/SpaceTransition'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Hero from './components/sections/Hero'
@@ -32,10 +33,15 @@ export default function App() {
         <main>
           <Hero />
           <About />
+          <SpaceTransition variant="asteroid-belt" />
           <Projects />
+          <SpaceTransition variant="orbital-arc" />
           <Toolkit />
+          <SpaceTransition variant="dust-field" />
           <Journey />
+          <SpaceTransition variant="particle-trail" />
           <Exploring />
+          <SpaceTransition variant="orbital-path" />
           <Contact />
         </main>
         <Footer />
