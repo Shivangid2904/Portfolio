@@ -6,7 +6,7 @@ import { skillGroups } from '../../data/skills'
 
 export default function Toolkit() {
   return (
-    <section id="toolkit" className="relative py-28 px-6 overflow-hidden" aria-label="Skills and toolkit">
+    <section id="toolkit" className="relative py-16 sm:py-20 px-6 overflow-hidden" aria-label="Skills and toolkit">
       {/* Subtle cosmic accent in section margin */}
       <CosmicSparkle
         size={13}

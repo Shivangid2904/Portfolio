@@ -6,7 +6,7 @@ import { projects } from '../../data/projects'
 
 export default function Projects() {
   return (
-    <section id="projects" className="relative py-28 px-6 overflow-hidden" aria-label="Projects">
+    <section id="projects" className="relative py-16 sm:py-20 px-6 overflow-hidden" aria-label="Projects">
       {/* Subtle cosmic accent in section margin */}
       <CosmicSparkle
         size={14}

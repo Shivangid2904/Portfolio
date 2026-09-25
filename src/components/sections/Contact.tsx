@@ -32,7 +32,7 @@ const contacts = [
 
 export default function Contact() {
   return (
-    <section id="contact" className="relative py-28 px-6" aria-label="Contact">
+    <section id="contact" className="relative py-16 sm:py-20 px-6" aria-label="Contact">
       <div className="max-w-3xl mx-auto text-center">
         <SectionHeading
           title="Say Hello"

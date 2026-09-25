@@ -64,7 +64,7 @@ const timeline: TimelineItem[] = [
 
 export default function Journey() {
   return (
-    <section id="journey" className="relative py-28 px-6 overflow-hidden" aria-label="Experience and journey">
+    <section id="journey" className="relative py-16 sm:py-20 px-6 overflow-hidden" aria-label="Experience and journey">
       {/* Subtle cosmic accent in section margin */}
       <CosmicSparkle
         size={14}

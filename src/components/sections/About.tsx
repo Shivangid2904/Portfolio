@@ -13,7 +13,7 @@ const interests = [
 
 export default function About() {
   return (
-    <section id="about" className="relative py-28 px-6 overflow-hidden" aria-label="About Shivangi">
+    <section id="about" className="relative py-16 sm:py-20 px-6 overflow-hidden" aria-label="About Shivangi">
       {/* Delicate celestial accent in whitespace */}
       <CosmicSparkle
         size={13}

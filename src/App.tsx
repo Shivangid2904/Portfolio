@@ -32,16 +32,17 @@ export default function App() {
         <Navbar />
         <main>
           <Hero />
+          <SpaceTransition seed="hero-about" />
           <About />
-          <SpaceTransition variant="asteroid-belt" />
+          <SpaceTransition seed="about-projects" />
           <Projects />
-          <SpaceTransition variant="orbital-arc" />
+          <SpaceTransition seed="projects-toolkit" />
           <Toolkit />
-          <SpaceTransition variant="dust-field" />
+          <SpaceTransition seed="toolkit-journey" />
           <Journey />
-          <SpaceTransition variant="particle-trail" />
+          <SpaceTransition seed="journey-exploring" />
           <Exploring />
-          <SpaceTransition variant="orbital-path" />
+          <SpaceTransition seed="exploring-contact" />
           <Contact />
         </main>
         <Footer />

@@ -1,396 +1,143 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 
-// ─── Seeded LCG for deterministic, consistent particle positions ──────────────
-// Same seed → identical coordinates on every render without state or re-render shifts.
+// ─── Deterministic Seeded Pseudo-Random Generator (LCG) ───────────────────────
+// Given a seed string or number, generates identical sequences without React re-render shifts.
 
-function makeLcg(seed: number) {
-  let s = (seed >>> 0) || 1
+function hashSeed(seed: string | number): number {
+  if (typeof seed === 'number') return seed
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) {
+    hash = (Math.imul(31, hash) + seed.charCodeAt(i)) >>> 0
+  }
+  return hash || 1
+}
+
+function createLcg(seedVal: number) {
+  let s = (seedVal >>> 0) || 1
   return () => {
     s = (Math.imul(s, 1664525) + 1013904223) >>> 0
     return s / 4294967295
   }
 }
 
-// ─── Color helpers ────────────────────────────────────────────────────────────
-
+// ─── Color Palette Helpers ────────────────────────────────────────────────────
 const C_LAVENDER = (a: number) => `rgba(216,180,226,${a.toFixed(3)})`
-const C_PINK     = (a: number) => `rgba(244,167,187,${a.toFixed(3)})`
-const C_MUTED    = (a: number) => `rgba(150,130,170,${a.toFixed(3)})`
 const C_LILAC    = (a: number) => `rgba(232,213,255,${a.toFixed(3)})`
+const C_PINK     = (a: number) => `rgba(244,167,187,${a.toFixed(3)})`
+const C_SLATE    = (a: number) => `rgba(150,130,170,${a.toFixed(3)})`
 
-// ─── Particle Types ───────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-interface Dot {
+interface MicroDot {
   x: number
   y: number
   r: number
-  op: number
-  pink?: boolean
+  opacity: number
+  color: string
 }
 
-interface Rock {
-  x: number
-  y: number
-  rx: number
-  ry: number
-  angle: number
-  op: number
+interface RockPolygon {
+  points: string
+  opacity: number
+  strokeOpacity: number
 }
 
-// ─── Particle Generators (computed once at module load) ───────────────────────
+interface BeltData {
+  hazeId: string
+  microDots: MicroDot[]
+  debris: MicroDot[]
+  rocks: RockPolygon[]
+}
 
-function genAsteroidBelt(): { dots: Dot[]; rocks: Rock[] } {
-  const rng = makeLcg(0x1a2b3c)
-  const dots: Dot[] = Array.from({ length: 36 }, () => ({
-    x: rng() * 1360 + 20,
-    y: rng() * 60 + 45,
-    r: rng() * 1.5 + 0.5,
-    op: rng() * 0.14 + 0.06,
-    pink: rng() > 0.88,
-  }))
+// ─── Belt Generation Function ─────────────────────────────────────────────────
 
-  const rocks: Rock[] = Array.from({ length: 7 }, () => {
-    const baseR = rng() * 3.5 + 2.2
+function generateBeltData(seedStr: string): BeltData {
+  const seedNum = hashSeed(seedStr)
+  const rng = createLcg(seedNum)
+
+  // 1. Micro-stardust (36 tiny specks)
+  const microDots: MicroDot[] = Array.from({ length: 36 }, () => {
+    const isPink = rng() > 0.84
+    const isLilac = rng() > 0.5
+    const op = rng() * 0.14 + 0.05
     return {
-      x: rng() * 1200 + 100,
-      y: rng() * 45 + 55,
-      rx: baseR,
-      ry: baseR * (0.5 + rng() * 0.45),
-      angle: rng() * 360,
-      op: rng() * 0.12 + 0.08,
+      x: rng() * 1180 + 10,
+      y: rng() * 48 + 11,
+      r: rng() * 0.8 + 0.35,
+      opacity: op,
+      color: isPink ? C_PINK(op) : isLilac ? C_LILAC(op) : C_LAVENDER(op),
     }
   })
 
-  return { dots, rocks }
-}
-
-function genOrbitalArc(): { dots: Dot[] } {
-  const rng = makeLcg(0xf00ba4)
-  // Curve: Q (0, 75) -> (700, 32) -> (1400, 75)
-  const dots: Dot[] = Array.from({ length: 26 }, (_, i) => {
-    const t = (i + 0.5) / 26
-    const bx = t * 1400
-    // Quadratic bezier y
-    const by = (1 - t) * (1 - t) * 75 + 2 * (1 - t) * t * 32 + t * t * 75
+  // 2. Debris particles (28 slightly denser specks)
+  const debris: MicroDot[] = Array.from({ length: 28 }, () => {
+    const op = rng() * 0.16 + 0.07
     return {
-      x: bx + (rng() - 0.5) * 40,
-      y: by + (rng() - 0.5) * 22,
-      r: rng() * 1.3 + 0.45,
-      op: rng() * 0.15 + 0.06,
-      pink: rng() > 0.82,
+      x: rng() * 1160 + 20,
+      y: rng() * 42 + 14,
+      r: rng() * 1.1 + 0.6,
+      opacity: op,
+      color: C_SLATE(op),
     }
   })
 
-  return { dots }
-}
+  // 3. Miniature irregular space rocks (7 small faceted rock silhouettes)
+  const rocks: RockPolygon[] = Array.from({ length: 7 }, (_, i) => {
+    // Distribute rocks across the horizontal belt with jitter
+    const segmentWidth = 1100 / 7
+    const cx = 50 + i * segmentWidth + (rng() - 0.5) * (segmentWidth * 0.6)
+    const cy = rng() * 32 + 19
+    const baseR = rng() * 1.5 + 2.2 // 2.2px to 3.7px: small, subtle, never huge
+    const numVerts = Math.floor(rng() * 3) + 5 // 5 to 7 vertices
 
-function genDustField(): Dot[] {
-  const rng = makeLcg(0xdeadbeef)
-  return Array.from({ length: 54 }, () => ({
-    x: rng() * 1380 + 10,
-    y: rng() * 100 + 15,
-    r: rng() * 1.1 + 0.35,
-    op: rng() * 0.12 + 0.04,
-    pink: rng() > 0.85,
-  }))
-}
+    const pts: string[] = []
+    for (let v = 0; v < numVerts; v++) {
+      const angle = (v / numVerts) * Math.PI * 2 + rng() * 0.3
+      const radiusVariation = baseR * (0.7 + rng() * 0.5)
+      const px = (cx + Math.cos(angle) * radiusVariation).toFixed(1)
+      const py = (cy + Math.sin(angle) * (radiusVariation * 0.75)).toFixed(1)
+      pts.push(`${px},${py}`)
+    }
 
-function genParticleTrail(): Dot[] {
-  const rng = makeLcg(0x42cafe)
-  return Array.from({ length: 32 }, (_, i) => {
-    const t = i / 31
-    // Gentle diagonal stream
-    const bx = 60 + t * 1280
-    const by = 88 - t * 45 + Math.sin(t * Math.PI) * 16
+    const op = rng() * 0.12 + 0.08
     return {
-      x: bx + (rng() - 0.5) * 60,
-      y: by + (rng() - 0.5) * 26,
-      r: rng() * 1.4 + 0.4,
-      op: rng() * 0.14 + 0.05,
-      pink: rng() > 0.78,
+      points: pts.join(' '),
+      opacity: op,
+      strokeOpacity: op * 1.2,
     }
   })
-}
 
-function genOrbitalPath(): { dots: Dot[] } {
-  const rng = makeLcg(0x9a8b7c)
-  // Subtle downward dipping arc
   return {
-    dots: Array.from({ length: 22 }, (_, i) => {
-      const t = (i + 0.5) / 22
-      const bx = t * 1400
-      const by = (1 - t) * (1 - t) * 35 + 2 * (1 - t) * t * 78 + t * t * 35
-      return {
-        x: bx + (rng() - 0.5) * 35,
-        y: by + (rng() - 0.5) * 18,
-        r: rng() * 1.2 + 0.4,
-        op: rng() * 0.13 + 0.05,
-        pink: rng() > 0.85,
-      }
-    }),
-  }
-}
-
-// ─── Static Data ──────────────────────────────────────────────────────────────
-
-const ASTEROID_DATA = genAsteroidBelt()
-const ORBITAL_DATA  = genOrbitalArc()
-const DUST_DATA     = genDustField()
-const TRAIL_DATA    = genParticleTrail()
-const PATH_DATA     = genOrbitalPath()
-
-// ─── SVG Variants ─────────────────────────────────────────────────────────────
-
-function AsteroidBeltSVG() {
-  return (
-    <svg
-      viewBox="0 0 1400 150"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-[150px] overflow-visible"
-      preserveAspectRatio="none"
-    >
-      {/* Barely visible horizontal dust band */}
-      <line
-        x1="0"
-        y1="75"
-        x2="1400"
-        y2="75"
-        stroke={C_MUTED(0.02)}
-        strokeWidth="50"
-      />
-
-      {/* Tiny debris particles */}
-      {ASTEROID_DATA.dots.map((d, i) => (
-        <circle
-          key={`dot-${i}`}
-          cx={d.x}
-          cy={d.y}
-          r={d.r}
-          fill={d.pink ? C_PINK(d.op) : C_LAVENDER(d.op)}
-        />
-      ))}
-
-      {/* Slightly larger irregular asteroid rocks */}
-      {ASTEROID_DATA.rocks.map((r, i) => (
-        <ellipse
-          key={`rock-${i}`}
-          cx={r.x}
-          cy={r.y}
-          rx={r.rx}
-          ry={r.ry}
-          transform={`rotate(${r.angle} ${r.x} ${r.y})`}
-          fill={C_MUTED(r.op)}
-          stroke={C_LAVENDER(r.op * 0.75)}
-          strokeWidth="0.5"
-        />
-      ))}
-    </svg>
-  )
-}
-
-function OrbitalArcSVG() {
-  const arcPath = 'M 0,75 Q 700,32 1400,75'
-  const whisperPath = 'M 100,85 Q 700,44 1300,85'
-
-  return (
-    <svg
-      viewBox="0 0 1400 120"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-[120px] overflow-visible"
-      preserveAspectRatio="none"
-    >
-      {/* Primary faint dashed orbital arc */}
-      <path
-        d={arcPath}
-        fill="none"
-        stroke={C_LAVENDER(0.065)}
-        strokeWidth="0.85"
-        strokeDasharray="3 9"
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-
-      {/* Whisper harmonic arc */}
-      <path
-        d={whisperPath}
-        fill="none"
-        stroke={C_PINK(0.035)}
-        strokeWidth="0.65"
-        strokeDasharray="2 12"
-        vectorEffect="non-scaling-stroke"
-      />
-
-      {/* Dust particles clustered along orbital path */}
-      {ORBITAL_DATA.dots.map((d, i) => (
-        <circle
-          key={`orb-${i}`}
-          cx={d.x}
-          cy={d.y}
-          r={d.r}
-          fill={d.pink ? C_PINK(d.op) : C_LAVENDER(d.op)}
-        />
-      ))}
-
-      {/* Two delicate anchor micro-sparkles */}
-      <circle cx={420} cy={44} r={1.6} fill={C_LILAC(0.24)} />
-      <circle cx={960} cy={42} r={1.4} fill={C_PINK(0.20)} />
-    </svg>
-  )
-}
-
-function DustFieldSVG() {
-  return (
-    <svg
-      viewBox="0 0 1400 130"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-[130px] overflow-visible"
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <radialGradient id="dustCenterHaze" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#D8B4E2" stopOpacity="0.035" />
-          <stop offset="60%" stopColor="#C084FC" stopOpacity="0.015" />
-          <stop offset="100%" stopColor="#0B0812" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      {/* Gentle central haze */}
-      <ellipse cx="700" cy="65" rx="450" ry="45" fill="url(#dustCenterHaze)" />
-
-      {/* Scattered cosmic stardust particles */}
-      {DUST_DATA.map((d, i) => (
-        <circle
-          key={`dust-${i}`}
-          cx={d.x}
-          cy={d.y}
-          r={d.r}
-          fill={d.pink ? C_PINK(d.op) : C_LILAC(d.op)}
-        />
-      ))}
-    </svg>
-  )
-}
-
-function ParticleTrailSVG() {
-  const guidePath = 'M 60,88 C 360,78 940,32 1340,24'
-
-  return (
-    <svg
-      viewBox="0 0 1400 120"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-[120px] overflow-visible"
-      preserveAspectRatio="none"
-    >
-      {/* Ghost guide path */}
-      <path
-        d={guidePath}
-        fill="none"
-        stroke={C_LAVENDER(0.045)}
-        strokeWidth="0.75"
-        strokeDasharray="2 10"
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-
-      {/* Streaming stardust particles */}
-      {TRAIL_DATA.map((d, i) => (
-        <circle
-          key={`trail-${i}`}
-          cx={d.x}
-          cy={d.y}
-          r={d.r}
-          fill={d.pink ? C_PINK(d.op) : C_LAVENDER(d.op)}
-        />
-      ))}
-    </svg>
-  )
-}
-
-function OrbitalPathSVG() {
-  const arcPath = 'M 0,35 Q 700,82 1400,35'
-
-  return (
-    <svg
-      viewBox="0 0 1400 110"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-[110px] overflow-visible"
-      preserveAspectRatio="none"
-    >
-      <path
-        d={arcPath}
-        fill="none"
-        stroke={C_LAVENDER(0.055)}
-        strokeWidth="0.75"
-        strokeDasharray="2 8"
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-
-      {PATH_DATA.dots.map((d, i) => (
-        <circle
-          key={`path-${i}`}
-          cx={d.x}
-          cy={d.y}
-          r={d.r}
-          fill={d.pink ? C_PINK(d.op) : C_LAVENDER(d.op)}
-        />
-      ))}
-    </svg>
-  )
-}
-
-// ─── Variant Types ────────────────────────────────────────────────────────────
-
-export type TransitionVariant =
-  | 'asteroid-belt'
-  | 'orbital-arc'
-  | 'dust-field'
-  | 'particle-trail'
-  | 'orbital-path'
-
-const VARIANT_HEIGHT: Record<TransitionVariant, number> = {
-  'asteroid-belt': 150,
-  'orbital-arc':   120,
-  'dust-field':    130,
-  'particle-trail': 120,
-  'orbital-path':  110,
-}
-
-function renderVariant(v: TransitionVariant) {
-  switch (v) {
-    case 'asteroid-belt':
-      return <AsteroidBeltSVG />
-    case 'orbital-arc':
-      return <OrbitalArcSVG />
-    case 'dust-field':
-      return <DustFieldSVG />
-    case 'particle-trail':
-      return <ParticleTrailSVG />
-    case 'orbital-path':
-      return <OrbitalPathSVG />
+    hazeId: `belt-haze-${seedStr.replace(/[^a-zA-Z0-9]/g, '-')}`,
+    microDots,
+    debris,
+    rocks,
   }
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 interface SpaceTransitionProps {
-  variant: TransitionVariant
-  /** Subtle parallax rate: fraction of distance from screen center applied as translateY */
+  /** Unique seed string to give each section divider distinct particle positioning */
+  seed: string
+  /** Parallax intensity factor. Kept minimal for subtle depth. Default: 0.025 */
   parallaxSpeed?: number
 }
 
 export default function SpaceTransition({
-  variant,
-  parallaxSpeed = 0.04,
+  seed,
+  parallaxSpeed = 0.025,
 }: SpaceTransitionProps) {
-  const wrapperRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const innerRef = useRef<HTMLDivElement>(null)
-  const h = VARIANT_HEIGHT[variant]
+
+  // Generate deterministic belt data once per seed
+  const data = useMemo(() => generateBeltData(seed), [seed])
 
   useEffect(() => {
-    const wrapper = wrapperRef.current
+    const container = containerRef.current
     const inner = innerRef.current
-    if (!wrapper || !inner) return
+    if (!container || !inner) return
 
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     if (mq.matches) return
@@ -399,19 +146,20 @@ export default function SpaceTransition({
     let currentY = 0
     let isVisible = false
 
-    const updateParallax = () => {
+    const tick = () => {
       if (!isVisible) return
 
-      const rect = wrapper.getBoundingClientRect()
+      const rect = container.getBoundingClientRect()
       const screenCenter = window.innerHeight / 2
       const distFromCenter = rect.top - screenCenter
-      // Restrained, bounded target offset (±18px max)
-      const targetY = Math.max(-18, Math.min(18, -distFromCenter * parallaxSpeed))
+      // Restrained, slow target offset strictly bounded between -10px and +10px
+      const targetY = Math.max(-10, Math.min(10, -distFromCenter * parallaxSpeed))
 
-      currentY += (targetY - currentY) * 0.08
+      // Smooth lerp: ~60ms lag
+      currentY += (targetY - currentY) * 0.06
       inner.style.transform = `translate3d(0, ${currentY.toFixed(1)}px, 0)`
 
-      rafId = requestAnimationFrame(updateParallax)
+      rafId = requestAnimationFrame(tick)
     }
 
     const observer = new IntersectionObserver(
@@ -419,15 +167,15 @@ export default function SpaceTransition({
         isVisible = entry.isIntersecting
         if (isVisible) {
           cancelAnimationFrame(rafId)
-          rafId = requestAnimationFrame(updateParallax)
+          rafId = requestAnimationFrame(tick)
         } else {
           cancelAnimationFrame(rafId)
         }
       },
-      { rootMargin: '200px 0px 200px 0px' }
+      { rootMargin: '120px 0px 120px 0px' }
     )
 
-    observer.observe(wrapper)
+    observer.observe(container)
 
     return () => {
       observer.disconnect()
@@ -437,22 +185,71 @@ export default function SpaceTransition({
 
   return (
     <div
-      ref={wrapperRef}
-      className="relative w-full pointer-events-none select-none"
-      style={{ height: 0, zIndex: 1, overflow: 'visible' }}
+      ref={containerRef}
+      className="relative w-full overflow-hidden pointer-events-none select-none my-1 sm:my-2"
       aria-hidden="true"
     >
       <div
         ref={innerRef}
-        className="w-full will-change-transform opacity-80 sm:opacity-100"
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: `${-(h / 2)}px`,
-          width: '100%',
-        }}
+        className="w-full will-change-transform h-[54px] sm:h-[68px]"
       >
-        {renderVariant(variant)}
+        <svg
+          viewBox="0 0 1200 70"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <radialGradient id={data.hazeId} cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#D8B4E2" stopOpacity="0.035" />
+              <stop offset="50%" stopColor="#C084FC" stopOpacity="0.015" />
+              <stop offset="100%" stopColor="#0B0812" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+
+          {/* Whisper-thin cosmic dust haze */}
+          <ellipse
+            cx="600"
+            cy="35"
+            rx="520"
+            ry="22"
+            fill={`url(#${data.hazeId})`}
+          />
+
+          {/* Fine micro-stardust */}
+          {data.microDots.map((d, i) => (
+            <circle
+              key={`stardust-${i}`}
+              cx={d.x}
+              cy={d.y}
+              r={d.r}
+              fill={d.color}
+            />
+          ))}
+
+          {/* Debris particles */}
+          {data.debris.map((d, i) => (
+            <circle
+              key={`debris-${i}`}
+              cx={d.x}
+              cy={d.y}
+              r={d.r}
+              fill={d.color}
+            />
+          ))}
+
+          {/* Miniature irregular space rocks */}
+          {data.rocks.map((r, i) => (
+            <polygon
+              key={`rock-${i}`}
+              points={r.points}
+              fill={C_SLATE(r.opacity)}
+              stroke={C_LAVENDER(r.strokeOpacity)}
+              strokeWidth="0.5"
+              strokeLinejoin="round"
+            />
+          ))}
+        </svg>
       </div>
     </div>
   )

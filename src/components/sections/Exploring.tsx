@@ -27,7 +27,7 @@ const curiosities = [
 
 export default function Exploring() {
   return (
-    <section id="exploring" className="relative py-28 px-6 overflow-hidden" aria-label="Currently exploring">
+    <section id="exploring" className="relative py-16 sm:py-20 px-6 overflow-hidden" aria-label="Currently exploring">
       {/* Soft atmospheric ambient glow */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[650px] h-[350px] sm:h-[450px] rounded-full pointer-events-none"
