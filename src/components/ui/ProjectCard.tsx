@@ -43,10 +43,39 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         "{project.hook}"
       </p>
 
+      {/* Verified metrics chips — only rendered when verified data exists */}
+      {project.metrics && project.metrics.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4" role="list" aria-label="Key project metrics">
+          {project.metrics.map((m) => (
+            <div
+              key={m.label}
+              role="listitem"
+              className="flex flex-col items-center px-3 py-1.5 rounded-lg border border-lavender/12 bg-lavender/4"
+            >
+              <span className="font-body text-xs font-semibold text-pink-soft leading-tight">{m.value}</span>
+              <span className="font-body text-[10px] text-lavender/40 leading-tight mt-0.5">{m.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Description */}
       <p className="font-body text-sm text-lavender/55 leading-relaxed mb-5 flex-1">
         {project.description}
       </p>
+
+      {/* Preview screenshot — only rendered when a verified asset exists */}
+      {project.previewImg && (
+        <div className="mb-5 rounded-xl overflow-hidden border border-lavender/8">
+          <img
+            src={project.previewImg}
+            alt={project.previewAlt ?? `${project.name} preview`}
+            className="w-full object-cover"
+            style={{ maxHeight: '180px', objectPosition: 'top' }}
+            loading="lazy"
+          />
+        </div>
+      )}
 
       {/* Tech pills */}
       <div className="flex flex-wrap gap-1.5 mb-5">
@@ -91,3 +120,4 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
     </motion.article>
   )
 }
+

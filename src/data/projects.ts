@@ -1,5 +1,10 @@
 export type ProjectStatus = 'in-progress' | 'built'
 
+export interface ProjectMetric {
+  label: string
+  value: string
+}
+
 export interface Project {
   id: string
   emoji: string
@@ -13,6 +18,12 @@ export interface Project {
   demo?: string
   demoLabel?: string
   category: string
+  /** Verified key facts shown as metric chips — only use confirmed data */
+  metrics?: ProjectMetric[]
+  /** Path to a real screenshot or image asset in /public */
+  previewImg?: string
+  /** Alt text for previewImg — required when previewImg is set */
+  previewAlt?: string
 }
 
 export const projects: Project[] = [
@@ -28,6 +39,11 @@ export const projects: Project[] = [
       "Developing an intelligent safety platform combining rule-based risk scoring, incident-aware route recommendations, and geospatial analysis. The current implementation includes a Flask API, Leaflet-based interface, Docker/PostGIS setup, and a route safety score using 7-day incident time decay. ML-based risk prediction and SHAP explainability are planned.",
     tech: ['Python', 'Flask', 'PostgreSQL', 'PostGIS', 'GeoAlchemy2', 'Leaflet', 'Docker', 'OSMnx', 'NetworkX'],
     github: 'https://github.com/Shivangid2904/safeher-ai',
+    metrics: [
+      { value: 'Rule-based', label: 'risk scoring' },
+      { value: '7-day', label: 'incident decay' },
+      { value: 'Leaflet', label: 'map interface' },
+    ],
   },
   {
     id: 'intelliask',
@@ -56,6 +72,12 @@ export const projects: Project[] = [
     github: 'https://github.com/Shivangid2904/ExoLife-Exoplanet-Habitability-Assessment',
     demo: 'https://exolife-exoplanet-habitability.onrender.com/',
     demoLabel: 'Live Demo',
+    metrics: [
+      { value: '3,757', label: 'exoplanets' },
+      { value: '49', label: 'habitable examples' },
+      { value: '75.7:1', label: 'class imbalance' },
+      { value: 'F1 0.636', label: 'proxy model' },
+    ],
   },
   {
     id: 'awsfinops',
@@ -69,6 +91,11 @@ export const projects: Project[] = [
       "Built a serverless AWS pipeline to process and analyze cloud cost data using AWS Cost and Usage Reports, S3, Glue, Athena, Lambda, and EventBridge. Implemented in an AWS Academy lab environment (Nov – Dec 2025), the project focuses on automated cloud cost analytics and scheduled FinOps monitoring.",
     tech: ['AWS Cost & Usage Reports', 'Amazon S3', 'AWS Glue', 'Amazon Athena', 'AWS Lambda', 'Amazon EventBridge', 'AWS IAM', 'Python', 'SQL'],
     github: 'https://github.com/Shivangid2904/AWS-FinOps-Analytics-Pipeline',
+    metrics: [
+      { value: 'CUR → S3', label: 'ingestion' },
+      { value: 'Glue + Athena', label: 'catalog & query' },
+      { value: 'Lambda + EventBridge', label: 'automation' },
+    ],
   },
   {
     id: 'orbitiq',
@@ -82,6 +109,9 @@ export const projects: Project[] = [
       "A space mission analytics platform analyzing global mission data using SQL, PostgreSQL, Python, and Power BI. Explores mission trends, organizations, vehicles, launch patterns, and reliability through data analysis and interactive visualization. The Power BI dashboard layer is currently in development.",
     tech: ['SQL', 'PostgreSQL', 'Python', 'Power BI'],
     github: 'https://github.com/Shivangid2904/OrbitIQ-Space-Mission-Intelligence-Platform',
+    metrics: [
+      { value: '4,324', label: 'missions in dataset' },
+    ],
   },
   {
     id: 'cve',
@@ -107,7 +137,9 @@ export const projects: Project[] = [
     description:
       "Designed and developed a portfolio website for kidswear designer Harsha Dubey, translating her requirements and creative vision into a responsive and visually engaging website. Continuous iteration based on client feedback across layout, content presentation, navigation, collection pages, and visual styling. The fashion/kidswear designs, collections, and creative work belong entirely to the client (Harsha Dubey); I designed and developed the website.",
     tech: ['HTML', 'CSS', 'JavaScript', 'Responsive Design', 'UI/UX', 'Netlify'],
-    demo: 'https://the-waddler-studio.netlify.app/portfolio',
+    demo: 'https://the-waddler-studio.netlify.app/',
     demoLabel: 'Live Website',
+    previewImg: '/waddler-preview.png',
+    previewAlt: 'The Waddler Studio portfolio page showing kidswear collection — Design Portfolio heading with Garden Giggles collection preview. Website designed and developed by Shivangi Dubey; fashion designs by Harsha Dubey.',
   },
 ]
