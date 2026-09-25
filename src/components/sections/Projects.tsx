@@ -27,7 +27,7 @@ export default function Projects() {
           transition={{ delay: 0.4 }}
           className="mt-10 font-body text-xs text-lavender/30 text-center italic"
         >
-          Projects marked IN PROGRESS are currently being developed — no invented completion claims here.
+          Projects marked IN PROGRESS are still being developed — their current status is shown honestly, without claiming unfinished work as complete.
         </motion.p>
       </div>
     </section>

@@ -48,6 +48,8 @@ src/
 |---|---|
 | SafeHer AI | ✦ IN PROGRESS |
 | IntelliAsk | ✦ BUILT |
-| CVE Vulnerability Intelligence Platform | ✦ BUILT |
 | ExoLife | ✦ BUILT |
+| AWS FinOps Automation Engine | ✦ BUILT |
 | OrbitIQ | ✦ IN PROGRESS |
+| CVE Vulnerability Intelligence Platform | ✦ BUILT |
+| The Waddler Studio — Kidswear Designer Portfolio | ✦ BUILT |
