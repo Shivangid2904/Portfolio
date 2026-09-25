@@ -1,28 +1,30 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Github, ExternalLink } from 'lucide-react'
 import type { Project } from '../../data/projects'
 import StatusBadge from './StatusBadge'
 
 interface ProjectCardProps {
   project: Project
-  index: number
+  index?: number
 }
 
-export default function ProjectCard({ project, index }: ProjectCardProps) {
+export default function ProjectCard({ project }: ProjectCardProps) {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: 'easeOut' }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className="group relative flex flex-col bg-card border border-lavender/10 rounded-2xl p-6 md:p-7 hover:border-pink-soft/25 transition-colors duration-300"
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      whileHover={shouldReduceMotion ? undefined : { y: -3, transition: { duration: 0.18, ease: 'easeOut' } }}
+      className="group relative flex flex-col bg-card border border-lavender/10 rounded-2xl p-6 md:p-7 hover:border-pink-soft/25 transition-colors duration-200"
       style={{
         boxShadow: '0 1px 24px rgba(11, 8, 18, 0.5)',
       }}
     >
       {/* Subtle glow on hover */}
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(244,167,187,0.04) 0%, transparent 70%)' }}
       />
 

@@ -22,8 +22,12 @@ export default function Navbar() {
   const handleNavClick = (href: string) => {
     setMenuOpen(false)
     const el = document.querySelector(href)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    if (el) {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      el.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' })
+    }
   }
+
 
   return (
     <header

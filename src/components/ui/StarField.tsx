@@ -67,33 +67,58 @@ export default function StarField() {
       animationId = requestAnimationFrame(draw)
     }
 
-    // Respect prefers-reduced-motion
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    resize()
-    init()
-
-    if (!prefersReduced) {
-      draw()
-    } else {
-      // Draw static version once
+    const drawStatic = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
       for (const star of stars) {
         ctx.beginPath()
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(232, 213, 255, ${star.opacity})`
+        ctx.fillStyle = `rgba(232, 213, 255, ${star.opacity * 0.7})`
+        ctx.fill()
+      }
+      for (let i = 0; i < 20; i++) {
+        const star = stars[(i * 8) % STAR_COUNT]
+        ctx.beginPath()
+        ctx.arc(star.x, star.y, star.radius * 1.3, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(244, 167, 187, ${star.opacity * 0.6})`
         ctx.fill()
       }
     }
 
-    window.addEventListener('resize', () => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const startOrStop = () => {
+      cancelAnimationFrame(animationId)
+      if (mediaQuery.matches) {
+        drawStatic()
+      } else {
+        draw()
+      }
+    }
+
+    resize()
+    init()
+    startOrStop()
+
+    const handleResize = () => {
       resize()
       init()
-    })
+      startOrStop()
+    }
+
+    const handleMotionChange = () => {
+      startOrStop()
+    }
+
+    window.addEventListener('resize', handleResize)
+    mediaQuery.addEventListener('change', handleMotionChange)
 
     return () => {
       cancelAnimationFrame(animationId)
+      window.removeEventListener('resize', handleResize)
+      mediaQuery.removeEventListener('change', handleMotionChange)
     }
   }, [])
+
 
   return (
     <canvas

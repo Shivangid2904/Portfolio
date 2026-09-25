@@ -24,7 +24,7 @@ export default function Projects() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
+          transition={{ duration: 0.2 }}
           className="mt-10 font-body text-xs text-lavender/30 text-center italic"
         >
           Projects marked IN PROGRESS are still being developed — their current status is shown honestly, without claiming unfinished work as complete.

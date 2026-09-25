@@ -21,6 +21,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -128,9 +129,10 @@ body {
   }
 
   html {
-    scroll-behavior: auto;
+    scroll-behavior: auto !important;
   }
 }
+
 
 /* ─── Custom animations ──────────────────────────────────────── */
 @keyframes float {
