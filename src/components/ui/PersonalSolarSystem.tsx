@@ -1,389 +1,459 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-// ─── Solar System Configuration ───────────────────────────────────────────────
-// Three subtle elliptical orbit rings centered on "Shivangi Dubey"
-// Inner Orbit: AI / ML, Data
-// Middle Orbit: Cloud, Engineering, Space
-// Outer Orbit: Design, Scientific ML (hidden on mobile to prevent crowding)
+// ─────────────────────────────────────────────────────────────────────────────
+//  DESIGN SYSTEM
+//  SVG viewBox: 1400 × 900, origin at center (−700 to +700 x, −450 to +450 y)
+//  Safe zone (hero text column): x ∈ [−310, +310], y ∈ [−250, +250]
+//
+//  Orbits are genuine ellipses in SVG coordinates.
+//  Planets travel along them via RAF; no conflicting CSS transform chains.
+//  Labels counter-rotate so they are ALWAYS upright.
+//  Tooltip appears beside the planet, auto-choosing left/right of center.
+// ─────────────────────────────────────────────────────────────────────────────
 
-export default function PersonalSolarSystem() {
-  const [scale, setScale] = useState(1)
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null)
+// SVG coordinate space
+const VW = 1400
+const VH = 900
+const CX = 0    // center x in viewBox coords (SVG uses translate)
+const CY = -30  // center y — shifted slightly up so text sits above mid
 
-  useEffect(() => {
-    const handleResize = () => {
-      const w = window.innerWidth
-      if (w < 480) {
-        setScale(0.44) // Mobile: compact scale to prevent overflow
-      } else if (w < 640) {
-        setScale(0.54) // Phablet
-      } else if (w < 768) {
-        setScale(0.66) // Small tablet
-      } else if (w < 1024) {
-        setScale(0.80) // Tablet
-      } else if (w < 1280) {
-        setScale(0.92) // Small desktop / laptop
-      } else {
-        setScale(1.0)  // Full desktop
-      }
-    }
+// ─── Orbit definitions ────────────────────────────────────────────────────────
+// Each orbit is an axis-aligned ellipse. We tilt slightly via SVG rotate.
+const ORBITS = {
+  inner: { rx: 290, ry: 155, tilt: -4,  dash: '5 10',  strokeOpacity: 0.13, label: 'CAREER FOCUS'         },
+  mid:   { rx: 430, ry: 228, tilt:  5,  dash: '4 12',  strokeOpacity: 0.09, label: 'TECHNICAL EXPLORATION' },
+  outer: { rx: 600, ry: 318, tilt: -8,  dash: '3 15',  strokeOpacity: 0.06, label: 'BEYOND THE CORE'       },
+}
 
-    handleResize()
-    window.addEventListener('resize', handleResize, { passive: true })
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+// ─── Planet definitions ───────────────────────────────────────────────────────
+interface PlanetDef {
+  id: string
+  label: string
+  orbit: 'inner' | 'mid' | 'outer'
+  angle0: number   // initial angle in radians (0 = right, CCW)
+  speed: number    // rad/s (positive = CCW)
+  color: string
+  glow: string
+  r: number        // dot radius
+  category: string // tooltip category line
+  showLabel: boolean // show ambient label (non-hover)
+  mobileHidden: boolean
+}
+
+const PLANETS: PlanetDef[] = [
+  // ── INNER: Career Focus ──
+  {
+    id: 'ai-ml',
+    label: 'AI / ML',
+    orbit: 'inner',
+    angle0: 0.4,           // ~23° — upper right flank
+    speed: 0.012,          // ~524s revolution
+    color: '#F4A7BB',
+    glow: 'rgba(244,167,187,0.5)',
+    r: 4.5,
+    category: 'CAREER FOCUS',
+    showLabel: true,
+    mobileHidden: false,
+  },
+  {
+    id: 'data',
+    label: 'DATA',
+    orbit: 'inner',
+    angle0: 2.1,           // ~120° — upper left flank
+    speed: 0.012,
+    color: '#E9D5FF',
+    glow: 'rgba(232,213,255,0.5)',
+    r: 4.2,
+    category: 'CAREER FOCUS',
+    showLabel: true,
+    mobileHidden: false,
+  },
+  {
+    id: 'cloud',
+    label: 'CLOUD',
+    orbit: 'inner',
+    angle0: 3.85,          // ~220° — lower left, below center
+    speed: 0.012,
+    color: '#D8B4E2',
+    glow: 'rgba(216,180,226,0.5)',
+    r: 4.2,
+    category: 'CAREER FOCUS',
+    showLabel: true,
+    mobileHidden: false,
+  },
+
+  // ── MIDDLE: Technical Exploration ──
+  {
+    id: 'engineering',
+    label: 'ENGINEERING',
+    orbit: 'mid',
+    angle0: 5.5,           // ~315° — lower right
+    speed: 0.008,          // ~785s revolution
+    color: '#E9D5FF',
+    glow: 'rgba(232,213,255,0.45)',
+    r: 3.8,
+    category: 'TECHNICAL EXPLORATION',
+    showLabel: true,
+    mobileHidden: false,
+  },
+  {
+    id: 'scientific-ml',
+    label: 'SCIENTIFIC ML',
+    orbit: 'mid',
+    angle0: 1.7,           // ~97° — upper left
+    speed: 0.008,
+    color: '#D8B4E2',
+    glow: 'rgba(216,180,226,0.4)',
+    r: 3.6,
+    category: 'TECHNICAL EXPLORATION',
+    showLabel: true,
+    mobileHidden: false,
+  },
+  {
+    id: 'space-data',
+    label: 'SPACE DATA',
+    orbit: 'mid',
+    angle0: 4.3,           // ~246° — lower left
+    speed: 0.008,
+    color: '#F4A7BB',
+    glow: 'rgba(244,167,187,0.4)',
+    r: 3.6,
+    category: 'TECHNICAL EXPLORATION',
+    showLabel: false,      // ambient label hidden; tooltip only
+    mobileHidden: true,
+  },
+
+  // ── OUTER: Beyond the Core ──
+  {
+    id: 'space',
+    label: 'SPACE',
+    orbit: 'outer',
+    angle0: 0.9,           // ~52° — upper right
+    speed: 0.005,          // ~1257s revolution
+    color: '#F4A7BB',
+    glow: 'rgba(244,167,187,0.35)',
+    r: 3.0,
+    category: 'BEYOND THE CORE',
+    showLabel: false,
+    mobileHidden: true,
+  },
+  {
+    id: 'design',
+    label: 'DESIGN',
+    orbit: 'outer',
+    angle0: 3.5,           // ~200° — lower left
+    speed: 0.005,
+    color: '#C084FC',
+    glow: 'rgba(192,132,252,0.35)',
+    r: 3.0,
+    category: 'BEYOND THE CORE',
+    showLabel: false,
+    mobileHidden: true,
+  },
+  {
+    id: 'research',
+    label: 'RESEARCH',
+    orbit: 'outer',
+    angle0: 5.1,           // ~292° — lower right
+    speed: 0.005,
+    color: '#D8B4E2',
+    glow: 'rgba(216,180,226,0.30)',
+    r: 2.8,
+    category: 'BEYOND THE CORE',
+    showLabel: false,
+    mobileHidden: true,
+  },
+]
+
+// ─── Maths helpers ────────────────────────────────────────────────────────────
+
+function ellipsePoint(angle: number, rx: number, ry: number, tiltDeg: number) {
+  // Point on axis-aligned ellipse, then rotated by tilt
+  const x0 = rx * Math.cos(angle)
+  const y0 = ry * Math.sin(angle)
+  const t = (tiltDeg * Math.PI) / 180
+  return {
+    x: x0 * Math.cos(t) - y0 * Math.sin(t),
+    y: x0 * Math.sin(t) + y0 * Math.cos(t),
+  }
+}
+
+
+// ─── Tooltip component ────────────────────────────────────────────────────────
+interface TooltipProps {
+  planet: PlanetDef
+  px: number // SVG x
+  py: number // SVG y
+}
+function Tooltip({ planet, px, py }: TooltipProps) {
+  // Decide which side to render the tooltip on
+  const onRight = px >= 0
+  const tipW = 140
+  const tipH = 52
+  const gap = 14
+  const tx = onRight ? px + planet.r + gap : px - planet.r - gap - tipW
+  const ty = py - tipH / 2
 
   return (
-    <div
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none flex items-center justify-center"
-      style={{
-        zIndex: 2,
-        width: 'min(82vw, 940px)',
-        height: 'min(54vh, 480px)',
-        maxWidth: '940px',
-        maxHeight: '480px',
-      }}
+    <g>
+      {/* Glass backdrop */}
+      <rect
+        x={tx}
+        y={ty}
+        width={tipW}
+        height={tipH}
+        rx="6"
+        ry="6"
+        fill="rgba(11,8,18,0.85)"
+        stroke={planet.color}
+        strokeWidth="0.6"
+        strokeOpacity="0.5"
+        filter="url(#tipGlow)"
+      />
+      {/* Category line */}
+      <text
+        x={tx + tipW / 2}
+        y={ty + 16}
+        textAnchor="middle"
+        fill={planet.color}
+        fontSize="7.5"
+        fontFamily="'Inter', system-ui, sans-serif"
+        fontWeight="600"
+        letterSpacing="0.14em"
+        fillOpacity="0.9"
+      >
+        {planet.category}
+      </text>
+      {/* Label line */}
+      <text
+        x={tx + tipW / 2}
+        y={ty + 33}
+        textAnchor="middle"
+        fill="#E9D5FF"
+        fontSize="10"
+        fontFamily="'Inter', system-ui, sans-serif"
+        fontWeight="500"
+        letterSpacing="0.08em"
+        fillOpacity="0.95"
+      >
+        {planet.label}
+      </text>
+    </g>
+  )
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
+export default function PersonalSolarSystem() {
+  const svgRef = useRef<SVGSVGElement>(null)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  // Store computed positions for tooltip rendering (SVG coords)
+  const posRef = useRef<Record<string, { x: number; y: number }>>({})
+  const [, forceUpdate] = useState(0)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let raf: number
+    const t0 = performance.now()
+
+    function frame(now: number) {
+      const elapsed = (now - t0) / 1000 // seconds
+      const newPos: Record<string, { x: number; y: number }> = {}
+
+      PLANETS.forEach((p) => {
+        const orb = ORBITS[p.orbit]
+        const angle = mq.matches ? p.angle0 : p.angle0 + elapsed * p.speed
+        const pos = ellipsePoint(angle, orb.rx, orb.ry, orb.tilt)
+        newPos[p.id] = { x: pos.x + CX, y: pos.y + CY }
+
+        // Update each planet group directly via DOM for performance
+        const el = document.getElementById(`planet-${p.id}`)
+        if (el) {
+          el.setAttribute('transform', `translate(${(pos.x + CX).toFixed(2)}, ${(pos.y + CY).toFixed(2)})`)
+        }
+
+        // Make the inner text upright by counter-rotating
+        const labelEl = document.getElementById(`label-${p.id}`)
+        if (labelEl) {
+          // Labels are in planet-local space, so no extra rotation needed
+          // — they are rendered as SVG text whose parent is always at new pos
+        }
+      })
+
+      posRef.current = newPos
+      raf = requestAnimationFrame(frame)
+    }
+
+    raf = requestAnimationFrame(frame)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  // Trigger re-render to draw tooltips at correct positions
+  useEffect(() => {
+    if (hoveredId) {
+      const interval = setInterval(() => forceUpdate(n => n + 1), 50)
+      return () => clearInterval(interval)
+    }
+  }, [hoveredId])
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+
+  return (
+    <svg
+      ref={svgRef}
+      viewBox={`${-VW / 2} ${-VH / 2} ${VW} ${VH}`}
+      xmlns="http://www.w3.org/2000/svg"
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ zIndex: 3 }}
       aria-hidden="true"
     >
-      {/* Scaled responsive wrapper */}
-      <div
-        className="relative flex items-center justify-center transition-transform duration-300"
-        style={{
-          transform: `scale(${scale})`,
-          width: '920px',
-          height: '520px',
-        }}
-      >
-        {/* Central Sun Aura right behind the name */}
-        <div
-          className="absolute w-56 h-36 rounded-full pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(244,167,187,0.06) 0%, rgba(192,132,252,0.03) 45%, transparent 70%)',
-            filter: 'blur(24px)',
-            zIndex: 1,
-          }}
-        />
+      <defs>
+        {/* Subtle glow filter for tooltip */}
+        <filter id="tipGlow" x="-10%" y="-20%" width="120%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
 
-        {/* 3D Elliptical Projection Plane (scaleY transforms circular tracks into orbits) */}
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{
-            transform: 'scaleY(0.55)',
-            transformOrigin: 'center center',
-          }}
-        >
-          {/* ═══════════════════════════════════════════════════════════════════
-              1. INNER ORBIT (AI / ML & Data)
-              Diameter: 420px (Visual width 420px, height ~231px)
-             ═══════════════════════════════════════════════════════════════════ */}
-          <div
-            className="absolute rounded-full pointer-events-none animate-orbit-inner"
-            style={{
-              width: '420px',
-              height: '420px',
-              top: '50%',
-              left: '50%',
-              border: '1px dashed rgba(216, 180, 226, 0.15)',
-              boxShadow: '0 0 15px rgba(216, 180, 226, 0.03)',
+        {/* Planet glow filter */}
+        <filter id="planetGlow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        {/* Central sun aura */}
+        <radialGradient id="sunAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stopColor="#F4A7BB" stopOpacity="0.06" />
+          <stop offset="50%"  stopColor="#C084FC" stopOpacity="0.025" />
+          <stop offset="100%" stopColor="#0B0812" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Central sun aura (very subtle, behind orbits) */}
+      <ellipse cx={CX} cy={CY} rx="190" ry="120" fill="url(#sunAura)" />
+
+      {/* ── Orbit rings ── */}
+      {(Object.keys(ORBITS) as Array<keyof typeof ORBITS>).map((orbitKey) => {
+        const orb = ORBITS[orbitKey]
+        const isOuterOrMid = orbitKey === 'outer' || orbitKey === 'mid'
+        return (
+          <ellipse
+            key={orbitKey}
+            cx={CX}
+            cy={CY}
+            rx={orb.rx}
+            ry={orb.ry}
+            transform={`rotate(${orb.tilt}, ${CX}, ${CY})`}
+            fill="none"
+            stroke="rgba(216,180,226,1)"
+            strokeOpacity={orb.strokeOpacity * (isMobile && isOuterOrMid ? 0.5 : 1)}
+            strokeWidth="0.8"
+            strokeDasharray={orb.dash}
+            strokeLinecap="round"
+            className={orbitKey === 'outer' ? 'hidden md:block' : ''}
+          />
+        )
+      })}
+
+      {/* ── Planet nodes ── */}
+      {PLANETS.map((planet) => {
+        if (isMobile && planet.mobileHidden) return null
+        const isHovered = hoveredId === planet.id
+        const orb = ORBITS[planet.orbit]
+        // Initial render position (will be overridden by RAF DOM updates)
+        const initPos = ellipsePoint(planet.angle0, orb.rx, orb.ry, orb.tilt)
+        const ix = (initPos.x + CX).toFixed(2)
+        const iy = (initPos.y + CY).toFixed(2)
+
+        // Determine label anchor direction
+        const px = posRef.current[planet.id]?.x ?? initPos.x + CX
+        const isRight = px >= 0
+
+        return (
+          <g
+            key={planet.id}
+            id={`planet-${planet.id}`}
+            transform={`translate(${ix}, ${iy})`}
+            style={{ pointerEvents: 'all', cursor: 'pointer' }}
+            role="button"
+            aria-label={`${planet.label} — ${planet.category}`}
+            tabIndex={0}
+            onMouseEnter={() => { setHoveredId(planet.id); forceUpdate(n => n + 1) }}
+            onMouseLeave={() => setHoveredId(null)}
+            onFocus={() => { setHoveredId(planet.id); forceUpdate(n => n + 1) }}
+            onBlur={() => setHoveredId(null)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                setHoveredId(hoveredId === planet.id ? null : planet.id)
+                forceUpdate(n => n + 1)
+              }
             }}
           >
-            {/* Planet: AI / ML (Angle: 15° — upper-right) */}
-            <div
-              className="absolute pointer-events-auto cursor-pointer"
-              style={{
-                left: 'calc(50% + 203px)',
-                top: 'calc(50% + 54px)',
-              }}
-              onMouseEnter={() => setHoveredNode('ai-ml')}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              <div className="animate-counter-inner">
-                <div className="flex items-center gap-2 group -translate-x-3 -translate-y-3">
-                  {/* Glowing Planet Dot */}
-                  <div className="relative flex items-center justify-center">
-                    <div
-                      className="w-2.5 h-2.5 rounded-full bg-[#F4A7BB] transition-transform duration-200 group-hover:scale-125"
-                      style={{
-                        boxShadow:
-                          hoveredNode === 'ai-ml'
-                            ? '0 0 12px 2px rgba(244, 167, 187, 0.8)'
-                            : '0 0 6px 1px rgba(244, 167, 187, 0.45)',
-                      }}
-                    />
-                    {hoveredNode === 'ai-ml' && (
-                      <div className="absolute w-5 h-5 rounded-full border border-[#F4A7BB]/60 animate-ping" />
-                    )}
-                  </div>
-                  {/* Label */}
-                  <span
-                    className={`font-body text-[10px] sm:text-[11px] font-medium uppercase tracking-wider whitespace-nowrap transition-colors duration-200 ${
-                      hoveredNode === 'ai-ml'
-                        ? 'text-white drop-shadow-[0_0_8px_rgba(244,167,187,0.8)]'
-                        : 'text-purple-lilac/85'
-                    }`}
-                  >
-                    AI / ML
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* Outer halo */}
+            <circle
+              cx="0"
+              cy="0"
+              r={isHovered ? planet.r * 2.8 : planet.r * 1.8}
+              fill={planet.glow}
+              opacity={isHovered ? 0.7 : 0.45}
+            />
 
-            {/* Planet: Data (Angle: 195° — lower-left) */}
-            <div
-              className="absolute pointer-events-auto cursor-pointer"
-              style={{
-                left: 'calc(50% - 203px)',
-                top: 'calc(50% - 54px)',
-              }}
-              onMouseEnter={() => setHoveredNode('data')}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              <div className="animate-counter-inner">
-                <div className="flex flex-row-reverse items-center gap-2 group -translate-x-full -translate-y-3">
-                  {/* Glowing Planet Dot */}
-                  <div className="relative flex items-center justify-center">
-                    <div
-                      className="w-2.5 h-2.5 rounded-full bg-[#E9D5FF] transition-transform duration-200 group-hover:scale-125"
-                      style={{
-                        boxShadow:
-                          hoveredNode === 'data'
-                            ? '0 0 12px 2px rgba(232, 213, 255, 0.8)'
-                            : '0 0 6px 1px rgba(232, 213, 255, 0.45)',
-                      }}
-                    />
-                    {hoveredNode === 'data' && (
-                      <div className="absolute w-5 h-5 rounded-full border border-[#E9D5FF]/60 animate-ping" />
-                    )}
-                  </div>
-                  {/* Label */}
-                  <span
-                    className={`font-body text-[10px] sm:text-[11px] font-medium uppercase tracking-wider whitespace-nowrap transition-colors duration-200 ${
-                      hoveredNode === 'data'
-                        ? 'text-white drop-shadow-[0_0_8px_rgba(232,213,255,0.8)]'
-                        : 'text-purple-lilac/85'
-                    }`}
-                  >
-                    Data
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+            {/* Hover ring pulse */}
+            {isHovered && (
+              <circle
+                cx="0"
+                cy="0"
+                r={planet.r * 2.2}
+                fill="none"
+                stroke={planet.color}
+                strokeWidth="0.8"
+                strokeOpacity="0.7"
+              />
+            )}
 
-          {/* ═══════════════════════════════════════════════════════════════════
-              2. MIDDLE ORBIT (Cloud, Engineering, Space)
-              Diameter: 650px (Visual width 650px, height ~357px)
-             ═══════════════════════════════════════════════════════════════════ */}
-          <div
-            className="absolute rounded-full pointer-events-none animate-orbit-mid"
-            style={{
-              width: '650px',
-              height: '650px',
-              top: '50%',
-              left: '50%',
-              border: '1px dashed rgba(244, 167, 187, 0.10)',
-              boxShadow: '0 0 20px rgba(244, 167, 187, 0.02)',
-            }}
-          >
-            {/* Planet: Space (Angle: 25° — upper-right) */}
-            <div
-              className="absolute pointer-events-auto cursor-pointer"
-              style={{
-                left: 'calc(50% + 294px)',
-                top: 'calc(50% + 137px)',
-              }}
-              onMouseEnter={() => setHoveredNode('space')}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              <div className="animate-counter-mid">
-                <div className="flex items-center gap-2 group -translate-x-3 -translate-y-3">
-                  <div className="relative flex items-center justify-center">
-                    <div
-                      className="w-2 h-2 rounded-full bg-[#F4A7BB] transition-transform duration-200 group-hover:scale-125"
-                      style={{
-                        boxShadow:
-                          hoveredNode === 'space'
-                            ? '0 0 10px 2px rgba(244, 167, 187, 0.7)'
-                            : '0 0 5px 1px rgba(244, 167, 187, 0.35)',
-                      }}
-                    />
-                  </div>
-                  <span
-                    className={`font-body text-[9.5px] sm:text-[10px] font-medium uppercase tracking-wider whitespace-nowrap transition-colors duration-200 ${
-                      hoveredNode === 'space'
-                        ? 'text-white drop-shadow-[0_0_8px_rgba(244,167,187,0.7)]'
-                        : 'text-lavender/75'
-                    }`}
-                  >
-                    Space
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* Core planet dot */}
+            <circle
+              cx="0"
+              cy="0"
+              r={isHovered ? planet.r + 1.2 : planet.r}
+              fill={planet.color}
+              filter="url(#planetGlow)"
+            />
 
-            {/* Planet: Cloud (Angle: 145° — upper-left) */}
-            <div
-              className="absolute pointer-events-auto cursor-pointer"
-              style={{
-                left: 'calc(50% - 266px)',
-                top: 'calc(50% + 186px)',
-              }}
-              onMouseEnter={() => setHoveredNode('cloud')}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              <div className="animate-counter-mid">
-                <div className="flex flex-row-reverse items-center gap-2 group -translate-x-full -translate-y-3">
-                  <div className="relative flex items-center justify-center">
-                    <div
-                      className="w-2 h-2 rounded-full bg-[#D8B4E2] transition-transform duration-200 group-hover:scale-125"
-                      style={{
-                        boxShadow:
-                          hoveredNode === 'cloud'
-                            ? '0 0 10px 2px rgba(216, 180, 226, 0.7)'
-                            : '0 0 5px 1px rgba(216, 180, 226, 0.35)',
-                      }}
-                    />
-                  </div>
-                  <span
-                    className={`font-body text-[9.5px] sm:text-[10px] font-medium uppercase tracking-wider whitespace-nowrap transition-colors duration-200 ${
-                      hoveredNode === 'cloud'
-                        ? 'text-white drop-shadow-[0_0_8px_rgba(216,180,226,0.7)]'
-                        : 'text-lavender/75'
-                    }`}
-                  >
-                    Cloud
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* Ambient label (non-hover, only for planets with showLabel=true) */}
+            {planet.showLabel && !isHovered && (
+              <text
+                x={isRight ? planet.r + 8 : -(planet.r + 8)}
+                y="4"
+                textAnchor={isRight ? 'start' : 'end'}
+                fill="#E9D5FF"
+                fillOpacity="0.65"
+                fontSize={planet.orbit === 'inner' ? '10' : '9'}
+                fontFamily="'Inter', system-ui, sans-serif"
+                fontWeight={planet.orbit === 'inner' ? '500' : '400'}
+                letterSpacing="0.1em"
+                className="select-none"
+              >
+                {planet.label}
+              </text>
+            )}
+          </g>
+        )
+      })}
 
-            {/* Planet: Engineering (Angle: 265° — lower) */}
-            <div
-              className="absolute pointer-events-auto cursor-pointer"
-              style={{
-                left: 'calc(50% - 28px)',
-                top: 'calc(50% - 323px)',
-              }}
-              onMouseEnter={() => setHoveredNode('engineering')}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              <div className="animate-counter-mid">
-                <div className="flex items-center gap-2 group -translate-x-1/2 -translate-y-full">
-                  <div className="relative flex items-center justify-center">
-                    <div
-                      className="w-2 h-2 rounded-full bg-[#E9D5FF] transition-transform duration-200 group-hover:scale-125"
-                      style={{
-                        boxShadow:
-                          hoveredNode === 'engineering'
-                            ? '0 0 10px 2px rgba(232, 213, 255, 0.7)'
-                            : '0 0 5px 1px rgba(232, 213, 255, 0.35)',
-                      }}
-                    />
-                  </div>
-                  <span
-                    className={`font-body text-[9.5px] sm:text-[10px] font-medium uppercase tracking-wider whitespace-nowrap transition-colors duration-200 ${
-                      hoveredNode === 'engineering'
-                        ? 'text-white drop-shadow-[0_0_8px_rgba(232,213,255,0.7)]'
-                        : 'text-lavender/75'
-                    }`}
-                  >
-                    Engineering
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ═══════════════════════════════════════════════════════════════════
-              3. OUTER ORBIT (Scientific ML & Design)
-              Diameter: 880px (Visual width 880px, height ~484px)
-              Automatically hidden on mobile (< 768px) to prevent crowding
-             ═══════════════════════════════════════════════════════════════════ */}
-          <div
-            className="hidden md:block absolute rounded-full pointer-events-none animate-orbit-outer"
-            style={{
-              width: '880px',
-              height: '880px',
-              top: '50%',
-              left: '50%',
-              border: '1px dashed rgba(192, 132, 252, 0.07)',
-            }}
-          >
-            {/* Planet: Scientific ML (Angle: 160° — left flank) */}
-            <div
-              className="absolute pointer-events-auto cursor-pointer"
-              style={{
-                left: 'calc(50% - 413px)',
-                top: 'calc(50% + 150px)',
-              }}
-              onMouseEnter={() => setHoveredNode('scientific-ml')}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              <div className="animate-counter-outer">
-                <div className="flex flex-row-reverse items-center gap-1.5 group -translate-x-full -translate-y-3">
-                  <div className="relative flex items-center justify-center">
-                    <div
-                      className="w-1.5 h-1.5 rounded-full bg-[#D8B4E2] transition-transform duration-200 group-hover:scale-125"
-                      style={{
-                        boxShadow:
-                          hoveredNode === 'scientific-ml'
-                            ? '0 0 8px 1px rgba(216, 180, 226, 0.6)'
-                            : '0 0 4px 1px rgba(216, 180, 226, 0.25)',
-                      }}
-                    />
-                  </div>
-                  <span
-                    className={`font-body text-[9px] italic tracking-wide whitespace-nowrap transition-colors duration-200 ${
-                      hoveredNode === 'scientific-ml'
-                        ? 'text-white drop-shadow-[0_0_6px_rgba(216,180,226,0.7)]'
-                        : 'text-lavender/55'
-                    }`}
-                  >
-                    Scientific ML
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Planet: Design (Angle: 340° — right flank) */}
-            <div
-              className="absolute pointer-events-auto cursor-pointer"
-              style={{
-                left: 'calc(50% + 413px)',
-                top: 'calc(50% - 150px)',
-              }}
-              onMouseEnter={() => setHoveredNode('design')}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              <div className="animate-counter-outer">
-                <div className="flex items-center gap-1.5 group -translate-x-2 -translate-y-3">
-                  <div className="relative flex items-center justify-center">
-                    <div
-                      className="w-1.5 h-1.5 rounded-full bg-[#C084FC] transition-transform duration-200 group-hover:scale-125"
-                      style={{
-                        boxShadow:
-                          hoveredNode === 'design'
-                            ? '0 0 8px 1px rgba(192, 132, 252, 0.6)'
-                            : '0 0 4px 1px rgba(192, 132, 252, 0.25)',
-                      }}
-                    />
-                  </div>
-                  <span
-                    className={`font-body text-[9px] italic tracking-wide whitespace-nowrap transition-colors duration-200 ${
-                      hoveredNode === 'design'
-                        ? 'text-white drop-shadow-[0_0_6px_rgba(192,132,252,0.7)]'
-                        : 'text-lavender/55'
-                    }`}
-                  >
-                    Design
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* ── Tooltips rendered LAST so they appear above planets ── */}
+      {hoveredId && (() => {
+        const planet = PLANETS.find(p => p.id === hoveredId)
+        if (!planet) return null
+        const pos = posRef.current[hoveredId]
+        if (!pos) return null
+        return <Tooltip planet={planet} px={pos.x} py={pos.y} />
+      })()}
+    </svg>
   )
 }
