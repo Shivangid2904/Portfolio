@@ -18,7 +18,7 @@ export default function Hero() {
       className="relative min-h-[100svh] flex flex-col items-center justify-center px-6 pt-24 pb-16 overflow-hidden"
       aria-label="Introduction"
     >
-      {/* z=0: Nebula glow */}
+      {/* ── Layer 0: Nebula glow ── */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[720px] h-[400px] sm:h-[500px] rounded-full pointer-events-none animate-nebula"
         aria-hidden="true"
@@ -26,26 +26,29 @@ export default function Hero() {
           background:
             'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(244,167,187,0.06) 0%, rgba(192,132,252,0.035) 45%, transparent 70%)',
           filter: 'blur(40px)',
-          zIndex: 0,
+          zIndex: 1,
         }}
       />
 
-      {/* z=1: Cosmic sparkles in hero corners — behind orbit */}
-      <CosmicSparkle size={15} className="absolute top-[16%] left-[12%] text-pink-soft/40 hidden md:block" twinkle="slow" />
-      <CosmicSparkle size={17} className="absolute top-[22%] right-[14%] text-purple-lilac/45 hidden sm:block" twinkle="gentle" />
-      <CosmicSparkle size={13} className="absolute top-[72%] left-[16%] text-purple-lilac/35 hidden md:block" twinkle="gentle" />
-      <CosmicSparkle size={16} className="absolute top-[68%] right-[15%] text-pink-soft/35 hidden sm:block" twinkle="slow" />
+      {/* ── Layer 1: Corner sparkles ── */}
+      <CosmicSparkle size={15} className="absolute top-[14%] left-[10%] text-pink-soft/40 hidden md:block" twinkle="slow"   style={{ zIndex: 2 } as React.CSSProperties} />
+      <CosmicSparkle size={17} className="absolute top-[20%] right-[12%] text-purple-lilac/45 hidden sm:block" twinkle="gentle" style={{ zIndex: 2 } as React.CSSProperties} />
+      <CosmicSparkle size={13} className="absolute bottom-[24%] left-[14%] text-purple-lilac/35 hidden md:block" twinkle="gentle" style={{ zIndex: 2 } as React.CSSProperties} />
+      <CosmicSparkle size={16} className="absolute bottom-[20%] right-[13%] text-pink-soft/35 hidden sm:block" twinkle="slow"   style={{ zIndex: 2 } as React.CSSProperties} />
 
       {/* Accent stars */}
-      <div className="absolute top-[30%] left-[8%] w-1.5 h-1.5 rounded-full bg-pink-soft/50 shadow-[0_0_8px_1px_rgba(244,167,187,0.35)] hidden lg:block pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-[15%] right-[24%] w-1 h-1 rounded-full bg-purple-lilac/60 shadow-[0_0_6px_1px_rgba(232,213,255,0.4)] hidden md:block pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-[62%] right-[8%] w-1.5 h-1.5 rounded-full bg-lavender/50 shadow-[0_0_8px_1px_rgba(216,180,226,0.3)] hidden lg:block pointer-events-none" aria-hidden="true" />
+      <div aria-hidden="true" className="absolute top-[28%] left-[7%] w-1.5 h-1.5 rounded-full bg-pink-soft/50 shadow-[0_0_8px_1px_rgba(244,167,187,0.35)] hidden lg:block pointer-events-none" style={{ zIndex: 2 }} />
+      <div aria-hidden="true" className="absolute top-[14%] right-[22%] w-1 h-1 rounded-full bg-purple-lilac/60 shadow-[0_0_6px_1px_rgba(232,213,255,0.4)] hidden md:block pointer-events-none" style={{ zIndex: 2 }} />
+      <div aria-hidden="true" className="absolute bottom-[30%] right-[7%] w-1.5 h-1.5 rounded-full bg-lavender/50 shadow-[0_0_8px_1px_rgba(216,180,226,0.3)] hidden lg:block pointer-events-none" style={{ zIndex: 2 }} />
 
-      {/* z=3: Solar system SVG — absolute, fills the entire section, behind hero text */}
+      {/* ── Layer 3: Solar system SVG — absolute backdrop, behind hero text ── */}
       <PersonalSolarSystem />
 
-      {/* z=10+: Hero text column — always on top of orbits */}
-      <div className="relative max-w-3xl mx-auto text-center flex flex-col items-center" style={{ zIndex: 10 }}>
+      {/* ── Layer 10+: Hero content — always on top, never moved by orbit ── */}
+      <div
+        className="relative w-full max-w-3xl mx-auto text-center flex flex-col items-center"
+        style={{ zIndex: 10 }}
+      >
         {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -56,12 +59,12 @@ export default function Hero() {
           ✦ &nbsp; AI · ML · Cloud · Space Data
         </motion.p>
 
-        {/* Name — the "sun" of the personal solar system */}
+        {/* Name — visual "sun" of the personal solar system */}
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6"
+          className="font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6 select-none"
           style={{
             textShadow: '0 0 35px rgba(244,167,187,0.12), 0 0 70px rgba(192,132,252,0.07)',
           }}
@@ -88,7 +91,7 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.3 }}
           className="font-body text-sm md:text-lg text-lavender/85 max-w-xl leading-relaxed mb-10"
         >
-          CS student at SRM University AP, specialising in AI & Machine Learning.
+          CS student at SRM University AP, specialising in AI &amp; Machine Learning.
           I explore machine learning, cloud systems, data analytics, and occasionally distant planets.
         </motion.p>
 
@@ -116,7 +119,6 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
           className="flex flex-wrap justify-center gap-3 mb-12"
-          style={{ position: 'relative', zIndex: 20 }}
         >
           <button
             onClick={scrollToProjects}
@@ -150,7 +152,6 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.6 }}
           className="flex items-center gap-5"
-          style={{ position: 'relative', zIndex: 20 }}
         >
           <a
             href={`mailto:${meta.email}`}
