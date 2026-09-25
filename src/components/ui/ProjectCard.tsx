@@ -61,7 +61,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       </div>
 
       {/* Links */}
-      <div className="flex items-center gap-4 pt-4 border-t border-lavender/8">
+      <div className="flex items-center gap-3 pt-4 border-t border-lavender/8 flex-wrap">
         {project.github && (
           <a
             href={project.github}
@@ -71,7 +71,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
             aria-label={`View ${project.name} on GitHub`}
           >
             <Github size={14} />
-            View on GitHub
+            GitHub
           </a>
         )}
         {project.demo && (
@@ -79,10 +79,10 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
             href={project.demo}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 font-body text-xs text-lavender/50 hover:text-pink-soft transition-colors duration-200"
-            aria-label={`Live demo of ${project.name}`}
+            className="flex items-center gap-1.5 font-body text-xs font-medium text-pink-soft border border-pink-soft/30 bg-pink-soft/8 rounded-full px-3 py-1 hover:bg-pink-soft/15 transition-colors duration-200"
+            aria-label={`${project.demoLabel ?? 'Live demo'} for ${project.name}`}
           >
-            <ExternalLink size={14} />
+            <ExternalLink size={13} />
             {project.demoLabel ?? 'Live Demo'}
           </a>
         )}
