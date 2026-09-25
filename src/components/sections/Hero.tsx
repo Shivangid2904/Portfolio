@@ -15,7 +15,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 overflow-hidden"
+      className="relative min-h-[100svh] flex flex-col items-center justify-center px-6 pt-24 pb-16 overflow-hidden"
       aria-label="Introduction"
     >
       {/* Subtle nebula glow behind Hero */}
@@ -66,9 +66,6 @@ export default function Hero() {
         aria-hidden="true"
       />
 
-      {/* Personal Solar System — orbits encircle the entire central safe zone */}
-      <PersonalSolarSystem />
-
       <div className="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center">
         {/* Eyebrow */}
         <motion.p
@@ -80,28 +77,32 @@ export default function Hero() {
           ✦ &nbsp; AI · ML · Cloud · Space Data
         </motion.p>
 
-        {/* Name */}
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6"
-          style={{
-            textShadow:
-              '0 0 35px rgba(244,167,187,0.12), 0 0 70px rgba(192,132,252,0.07)',
-          }}
-        >
-          Shivangi
-          <br />
-          <span className="text-pink-soft/90">Dubey</span>
-        </motion.h1>
+        {/* Center of Solar System: Name with Personal Solar System */}
+        <div className="relative w-full flex justify-center items-center">
+          <PersonalSolarSystem />
+
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="relative z-10 font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6 text-center select-none"
+            style={{
+              textShadow:
+                '0 0 35px rgba(244,167,187,0.12), 0 0 70px rgba(192,132,252,0.07)',
+            }}
+          >
+            Shivangi
+            <br />
+            <span className="text-pink-soft/90">Dubey</span>
+          </motion.h1>
+        </div>
 
         {/* Tagline */}
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="font-display text-xl md:text-2xl text-lavender/60 italic font-light mb-6 leading-relaxed"
+          className="relative z-10 font-display text-xl md:text-2xl text-lavender/60 italic font-light mb-6 leading-relaxed"
         >
           Somewhere between AI, space, and things I get curious enough to build.
         </motion.p>
@@ -111,7 +112,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="font-body text-sm md:text-lg text-lavender/85 max-w-xl leading-relaxed mb-10"
+          className="relative z-10 font-body text-sm md:text-lg text-lavender/85 max-w-xl leading-relaxed mb-10"
         >
           CS student at SRM University AP, specialising in AI & Machine Learning.
           I explore machine learning, cloud systems, data analytics, and occasionally distant planets.
@@ -122,7 +123,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-10"
+          className="relative z-10 flex flex-wrap justify-center gap-x-6 gap-y-2 mb-10"
         >
           {[
             'SRM University AP',
@@ -140,7 +141,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="relative z-20 flex flex-wrap justify-center gap-3 mb-12"
         >
           <button
             onClick={scrollToProjects}
@@ -173,7 +174,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="flex items-center gap-5"
+          className="relative z-20 flex items-center gap-5"
         >
           <a
             href={`mailto:${meta.email}`}
@@ -202,7 +203,7 @@ export default function Hero() {
         transition={{ delay: 1.2, duration: 0.6 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 text-lavender/25 hover:text-lavender/50 transition-colors duration-200 animate-float"
         aria-label="Scroll to about section"
-        style={{ zIndex: 10 }}
+        style={{ zIndex: 20 }}
       >
         <ArrowDown size={18} />
       </motion.button>

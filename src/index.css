@@ -184,3 +184,70 @@ body {
 section:not(:first-of-type) {
   border-top: 1px solid rgba(216, 180, 226, 0.05);
 }
+
+/* ─── Hero Solar System Orbit Animations ─────────────────────── */
+@keyframes orbit-spin-inner {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes orbit-counter-inner {
+  from { transform: translate(-50%, -50%) rotate(0deg) scaleY(1.82); }
+  to { transform: translate(-50%, -50%) rotate(-360deg) scaleY(1.82); }
+}
+
+@keyframes orbit-spin-mid {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes orbit-counter-mid {
+  from { transform: translate(-50%, -50%) rotate(0deg) scaleY(1.82); }
+  to { transform: translate(-50%, -50%) rotate(-360deg) scaleY(1.82); }
+}
+
+@keyframes orbit-spin-outer {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes orbit-counter-outer {
+  from { transform: translate(-50%, -50%) rotate(0deg) scaleY(1.82); }
+  to { transform: translate(-50%, -50%) rotate(-360deg) scaleY(1.82); }
+}
+
+.animate-orbit-inner {
+  animation: orbit-spin-inner 120s linear infinite;
+  will-change: transform;
+}
+.animate-counter-inner {
+  animation: orbit-counter-inner 120s linear infinite;
+  will-change: transform;
+}
+
+.animate-orbit-mid {
+  animation: orbit-spin-mid 175s linear infinite;
+  will-change: transform;
+}
+.animate-counter-mid {
+  animation: orbit-counter-mid 175s linear infinite;
+  will-change: transform;
+}
+
+.animate-orbit-outer {
+  animation: orbit-spin-outer 250s linear infinite;
+  will-change: transform;
+}
+.animate-counter-outer {
+  animation: orbit-counter-outer 250s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-orbit-inner,
+  .animate-counter-inner,
+  .animate-orbit-mid,
+  .animate-counter-mid,
+  .animate-orbit-outer,
+  .animate-counter-outer {
+    animation: none !important;
+  }
+}
+
