@@ -66,6 +66,9 @@ export default function Hero() {
         aria-hidden="true"
       />
 
+      {/* Personal Solar System — orbits encircle the entire central safe zone */}
+      <PersonalSolarSystem />
+
       <div className="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center">
         {/* Eyebrow */}
         <motion.p
@@ -77,25 +80,21 @@ export default function Hero() {
           ✦ &nbsp; AI · ML · Cloud · Space Data
         </motion.p>
 
-        {/* Center of Solar System: Name with Personal Solar System */}
-        <div className="relative w-full flex justify-center items-center">
-          <PersonalSolarSystem />
-
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="relative z-10 font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6 text-center select-none"
-            style={{
-              textShadow:
-                '0 0 35px rgba(244,167,187,0.12), 0 0 70px rgba(192,132,252,0.07)',
-            }}
-          >
-            Shivangi
-            <br />
-            <span className="text-pink-soft/90">Dubey</span>
-          </motion.h1>
-        </div>
+        {/* Name */}
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6"
+          style={{
+            textShadow:
+              '0 0 35px rgba(244,167,187,0.12), 0 0 70px rgba(192,132,252,0.07)',
+          }}
+        >
+          Shivangi
+          <br />
+          <span className="text-pink-soft/90">Dubey</span>
+        </motion.h1>
 
         {/* Tagline */}
         <motion.p
