@@ -3,6 +3,8 @@ export interface SkillGroup {
   label: string
   emoji: string
   skills: string[]
+  /** Skills listed here are highlighted as core — must be a subset of skills[] */
+  coreSkills?: string[]
 }
 
 export const skillGroups: SkillGroup[] = [
@@ -13,18 +15,19 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       'Python',
       'scikit-learn',
-      'XGBoost',
       'SHAP',
-      'NLP',
-      'Sentence Transformers',
-      'FAISS',
-      'Ollama',
-      'RAG',
       'Pandas',
       'NumPy',
-      'EDA',
+      'FAISS',
+      'Sentence Transformers',
+      'Ollama',
+      'RAG',
+      'XGBoost',
+      'NLP',
       'Feature Engineering',
+      'EDA',
     ],
+    coreSkills: ['Python', 'scikit-learn', 'SHAP', 'Pandas', 'NumPy'],
   },
   {
     id: 'cloud',
@@ -33,15 +36,16 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       'AWS Lambda',
       'S3',
-      'DynamoDB',
-      'SNS',
-      'EventBridge',
       'Athena',
       'Glue',
-      'Cognito',
+      'EventBridge',
+      'DynamoDB',
       'IAM',
       'CloudTrail',
+      'SNS',
+      'Cognito',
     ],
+    coreSkills: ['AWS Lambda', 'S3', 'Athena', 'Glue'],
   },
   {
     id: 'engineering',
@@ -50,17 +54,18 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       'SQL',
       'PostgreSQL',
-      'PostGIS',
-      'MySQL',
       'Flask',
-      'Streamlit',
       'Docker',
       'Git',
       'GitHub',
+      'PostGIS',
+      'Streamlit',
+      'Leaflet.js',
+      'MySQL',
       'C++',
       'Java',
-      'Leaflet.js',
     ],
+    coreSkills: ['SQL', 'PostgreSQL', 'Flask', 'Docker'],
   },
   {
     id: 'scientific',
@@ -68,13 +73,15 @@ export const skillGroups: SkillGroup[] = [
     label: 'Scientific & Spatial',
     skills: [
       'Power BI',
-      'NASA Datasets',
       'OSMnx',
       'NetworkX',
-      'PyMuPDF',
+      'NASA Datasets',
       'spaCy',
+      'PyMuPDF',
       'Tailwind CSS',
       'HTML / CSS',
     ],
+    coreSkills: ['Power BI', 'OSMnx', 'NetworkX'],
   },
 ]
+

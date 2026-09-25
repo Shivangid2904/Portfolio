@@ -6,19 +6,23 @@ interface TimelineItem {
   title: string
   subtitle: string
   period: string
-  note?: string
-  bullets?: string[]
   tag?: string
+  bullets?: string[]
+  note?: string
 }
 
 const timeline: TimelineItem[] = [
   {
     emoji: '🎓',
     title: 'SRM University AP',
-    subtitle: 'B.Tech, Computer Science & Engineering, AI & ML Specialisation',
+    subtitle: 'B.Tech, Computer Science & Engineering · AI & ML Specialisation',
     period: '2023 to May 2027 (expected)',
-    note: 'CGPA: 9.24 / 10',
     tag: 'Education',
+    note: 'CGPA: 9.24 / 10',
+    bullets: [
+      'Specialising in Artificial Intelligence & Machine Learning with focus on data-driven systems and algorithmic foundations',
+      'Core coursework includes Machine Learning, Data Structures & Algorithms, Database Systems, and Cloud Computing',
+    ],
   },
   {
     emoji: '☁️',
@@ -26,30 +30,34 @@ const timeline: TimelineItem[] = [
     subtitle: 'Amazon Web Services',
     period: '2026',
     tag: 'Certification',
+    bullets: [
+      'Validated foundational knowledge of AWS cloud architecture, security, compliance, and core services (S3, Lambda, Athena, IAM)',
+      'Demonstrated practical understanding of cloud economics, billing models, and serverless design principles',
+    ],
   },
   {
     emoji: '🌷',
     title: 'Convenor, Smart Tech Club',
     subtitle: 'SRM University AP',
     period: 'August 2025 to May 2026',
-    bullets: [
-      'Led the student technical community and club initiatives as Convenor',
-      'Organised technical workshops covering AI/ML, Cloud, and Cybersecurity',
-      'Hosted campus hackathons and collaborative sessions for students to explore and build together',
-    ],
     tag: 'Leadership',
+    bullets: [
+      'Led the student technical community operations and guided initiative planning as Club Convenor',
+      'Organised and coordinated technical workshops covering AI/ML, IoT, cloud, cybersecurity, and related technologies',
+      'Facilitated campus hackathons and collaborative sessions for students to explore, build, and share technical projects',
+    ],
   },
   {
     emoji: '🎨',
     title: 'Design Intern, Back and Forth Pvt. Ltd.',
     subtitle: 'Unipool (ride-sharing product)',
     period: 'May to July 2025',
-    bullets: [
-      'Designed and developed Unipool\'s ride-sharing prototype interface',
-      'Built reusable UI components with HTML, CSS, and Tailwind CSS',
-      'Translated user-centered design requirements into responsive web pages',
-    ],
     tag: 'Experience',
+    bullets: [
+      'Designed and developed Unipool\'s ride-sharing prototype interface, focusing on intuitive user flows',
+      'Built reusable responsive UI components using HTML, CSS, and Tailwind CSS for the internship project',
+      'Translated user-centered requirements and wireframes into clean, cross-device responsive web layouts',
+    ],
   },
 ]
 
@@ -64,7 +72,7 @@ export default function Journey() {
 
         <div className="relative">
           {/* Vertical line */}
-          <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-pink-soft/20 via-lavender/15 to-transparent md:left-8" aria-hidden="true" />
+          <div className="absolute left-5 sm:left-6 md:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-pink-soft/20 via-lavender/15 to-transparent" aria-hidden="true" />
 
           <div className="space-y-10">
             {timeline.map((item, i) => (
@@ -74,10 +82,10 @@ export default function Journey() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative pl-16 md:pl-20"
+                className="relative pl-14 sm:pl-16 md:pl-20"
               >
                 {/* Timeline dot */}
-                <div className="absolute left-4 top-1 w-5 h-5 rounded-full border border-pink-soft/30 bg-deep flex items-center justify-center md:left-6">
+                <div className="absolute left-3 sm:left-4 md:left-6 top-1 w-5 h-5 rounded-full border border-pink-soft/30 bg-deep flex items-center justify-center">
                   <div className="w-1.5 h-1.5 rounded-full bg-pink-soft/60" />
                 </div>
 
@@ -90,12 +98,12 @@ export default function Journey() {
                         <h3 className="font-display text-xl text-purple-lilac font-medium leading-snug">
                           {item.title}
                         </h3>
-                        <p className="font-body text-sm text-lavender/55">{item.subtitle}</p>
+                        <p className="font-body text-sm text-lavender/60">{item.subtitle}</p>
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                       {item.tag && (
-                        <span className="font-body text-xs px-2.5 py-0.5 rounded-full border border-lavender/15 text-lavender/40">
+                        <span className="font-body text-xs px-2.5 py-0.5 rounded-full border border-lavender/15 text-lavender/45 bg-lavender/5">
                           {item.tag}
                         </span>
                       )}
@@ -104,18 +112,22 @@ export default function Journey() {
                   </div>
 
                   {item.bullets && (
-                    <ul className="mt-3 space-y-1.5 list-none">
+                    <ul className="mt-3.5 space-y-2 list-none">
                       {item.bullets.map((bullet, bi) => (
-                        <li key={bi} className="font-body text-sm text-lavender/55 flex gap-2.5">
-                          <span className="text-pink-soft/50 mt-0.5 flex-shrink-0">✦</span>
-                          {bullet}
+                        <li key={bi} className="font-body text-sm text-lavender/65 leading-relaxed flex gap-2.5">
+                          <span className="text-pink-soft/60 mt-1 flex-shrink-0 text-xs">✦</span>
+                          <span>{bullet}</span>
                         </li>
                       ))}
                     </ul>
                   )}
 
                   {item.note && (
-                    <p className="mt-3 font-body text-xs text-lavender/35 italic">{item.note}</p>
+                    <div className="mt-3.5 pt-3 border-t border-lavender/10 flex items-center gap-2">
+                      <span className="font-body text-xs px-2.5 py-1 rounded-md bg-lavender/8 border border-lavender/15 text-pink-soft font-medium">
+                        {item.note}
+                      </span>
+                    </div>
                   )}
                 </div>
               </motion.div>
@@ -126,3 +138,4 @@ export default function Journey() {
     </section>
   )
 }
+
