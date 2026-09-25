@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail, FileText, ArrowDown } from 'lucide-react'
 import { meta } from '../../data/meta'
 import CosmicSparkle from '../ui/CosmicSparkle'
+import PersonalSolarSystem from '../ui/PersonalSolarSystem'
 
 export default function Hero() {
   const scrollToProjects = () => {
@@ -28,54 +29,6 @@ export default function Hero() {
           zIndex: 0,
         }}
       />
-
-      {/* Orbital decoration — single elegant arc with delicate gradient */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        aria-hidden="true"
-        style={{ zIndex: 1 }}
-      >
-        <defs>
-          <linearGradient id="hero-orbital-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#F4A7BB" stopOpacity="0" />
-            <stop offset="35%" stopColor="#F4A7BB" stopOpacity="0.14" />
-            <stop offset="65%" stopColor="#D8B4E2" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="#D8B4E2" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {/* Large orbital arc */}
-        <ellipse
-          cx="50%"
-          cy="48%"
-          rx="350"
-          ry="250"
-          fill="none"
-          stroke="url(#hero-orbital-grad)"
-          strokeWidth="1"
-          strokeDasharray="4 14"
-        />
-        {/* Smaller inner arc */}
-        <ellipse
-          cx="50%"
-          cy="48%"
-          rx="230"
-          ry="165"
-          fill="none"
-          stroke="rgba(216,180,226,0.04)"
-          strokeWidth="0.75"
-        />
-        {/* Tiny orbiting dot */}
-        <circle cx="calc(50% + 350px)" cy="48%" r="2.5" fill="rgba(244,167,187,0.5)">
-          <animateTransform
-            attributeName="transform"
-            type="rotate"
-            from="0 50% 48%"
-            to="360 50% 48%"
-            dur="45s"
-            repeatCount="indefinite"
-          />
-        </circle>
-      </svg>
 
       {/* Hero cosmic sparkles — placed gently in whitespace */}
       <CosmicSparkle
@@ -124,20 +77,25 @@ export default function Hero() {
           ✦ &nbsp; AI · ML · Cloud · Space Data
         </motion.p>
 
-        {/* Name */}
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6"
-          style={{
-            textShadow: '0 0 35px rgba(244,167,187,0.12), 0 0 70px rgba(192,132,252,0.07)',
-          }}
-        >
-          Shivangi
-          <br />
-          <span className="text-pink-soft/90">Dubey</span>
-        </motion.h1>
+        {/* Center of Solar System: Name with Personal Solar System */}
+        <div className="relative w-full flex justify-center items-center">
+          <PersonalSolarSystem />
+
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="relative z-10 font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6 text-center select-none"
+            style={{
+              textShadow:
+                '0 0 35px rgba(244,167,187,0.12), 0 0 70px rgba(192,132,252,0.07)',
+            }}
+          >
+            Shivangi
+            <br />
+            <span className="text-pink-soft/90">Dubey</span>
+          </motion.h1>
+        </div>
 
         {/* Tagline */}
         <motion.p
