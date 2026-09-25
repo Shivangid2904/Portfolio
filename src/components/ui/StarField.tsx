@@ -27,6 +27,32 @@ export default function StarField() {
       canvas.height = window.innerHeight
     }
 
+    interface SparkleStar {
+      x: number
+      y: number
+      size: number
+      opacity: number
+      isPink: boolean
+      twinkleOffset: number
+    }
+
+    const sparkleStars: SparkleStar[] = []
+    const SPARKLE_COUNT = 10
+
+    const drawSparkle = (cx: number, cy: number, size: number, isPink: boolean, opacity: number) => {
+      ctx.save()
+      ctx.fillStyle = isPink ? `rgba(244, 167, 187, ${opacity})` : `rgba(232, 213, 255, ${opacity})`
+      ctx.beginPath()
+      ctx.moveTo(cx, cy - size)
+      ctx.quadraticCurveTo(cx, cy, cx + size, cy)
+      ctx.quadraticCurveTo(cx, cy, cx, cy + size)
+      ctx.quadraticCurveTo(cx, cy, cx - size, cy)
+      ctx.quadraticCurveTo(cx, cy, cx, cy - size)
+      ctx.closePath()
+      ctx.fill()
+      ctx.restore()
+    }
+
     const init = () => {
       stars.length = 0
       for (let i = 0; i < STAR_COUNT; i++) {
@@ -36,6 +62,18 @@ export default function StarField() {
           radius: Math.random() * 1.2 + 0.2,
           opacity: Math.random() * 0.6 + 0.1,
           speed: Math.random() * 0.015 + 0.005,
+          twinkleOffset: Math.random() * Math.PI * 2,
+        })
+      }
+
+      sparkleStars.length = 0
+      for (let i = 0; i < SPARKLE_COUNT; i++) {
+        sparkleStars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 2.5 + 3,
+          opacity: Math.random() * 0.25 + 0.15,
+          isPink: i % 3 === 0,
           twinkleOffset: Math.random() * Math.PI * 2,
         })
       }
@@ -64,6 +102,12 @@ export default function StarField() {
         ctx.fill()
       }
 
+      // Draw subtle 4-point sparkle stars
+      for (const sp of sparkleStars) {
+        const twinkle = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * 0.7 + sp.twinkleOffset))
+        drawSparkle(sp.x, sp.y, sp.size, sp.isPink, sp.opacity * twinkle)
+      }
+
       animationId = requestAnimationFrame(draw)
     }
 
@@ -82,7 +126,11 @@ export default function StarField() {
         ctx.fillStyle = `rgba(244, 167, 187, ${star.opacity * 0.6})`
         ctx.fill()
       }
+      for (const sp of sparkleStars) {
+        drawSparkle(sp.x, sp.y, sp.size, sp.isPink, sp.opacity * 0.5)
+      }
     }
+
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
 

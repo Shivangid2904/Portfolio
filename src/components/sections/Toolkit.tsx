@@ -1,11 +1,19 @@
 import { motion } from 'framer-motion'
 import SectionHeading from '../ui/SectionHeading'
 import SkillPill from '../ui/SkillPill'
+import CosmicSparkle from '../ui/CosmicSparkle'
 import { skillGroups } from '../../data/skills'
 
 export default function Toolkit() {
   return (
-    <section id="toolkit" className="relative py-28 px-6" aria-label="Skills and toolkit">
+    <section id="toolkit" className="relative py-28 px-6 overflow-hidden" aria-label="Skills and toolkit">
+      {/* Subtle cosmic accent in section margin */}
+      <CosmicSparkle
+        size={13}
+        className="absolute top-14 left-8 lg:left-16 text-pink-soft/30 hidden sm:block pointer-events-none"
+        twinkle="slow"
+      />
+
       <div className="max-w-6xl mx-auto">
         <SectionHeading
           title="My Toolkit"

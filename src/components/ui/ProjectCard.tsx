@@ -23,9 +23,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         boxShadow: '0 1px 24px rgba(11, 8, 18, 0.5)',
       }}
     >
-      {/* Subtle glow on hover */}
+      {/* Subtle cosmic glow on hover */}
       <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(244,167,187,0.04) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(ellipse at 50% -10%, rgba(244,167,187,0.06) 0%, rgba(192,132,252,0.025) 45%, transparent 70%)' }}
       />
 
       {/* Top row */}

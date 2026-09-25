@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail, FileText, ArrowDown } from 'lucide-react'
 import { meta } from '../../data/meta'
+import CosmicSparkle from '../ui/CosmicSparkle'
 
 export default function Hero() {
   const scrollToProjects = () => {
@@ -13,48 +14,104 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16"
+      className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 overflow-hidden"
       aria-label="Introduction"
     >
-      {/* Orbital decoration — single elegant arc, hero only */}
+      {/* Subtle nebula glow behind Hero */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[720px] h-[400px] sm:h-[500px] rounded-full pointer-events-none animate-nebula"
+        aria-hidden="true"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(244,167,187,0.06) 0%, rgba(192,132,252,0.035) 45%, transparent 70%)',
+          filter: 'blur(40px)',
+          zIndex: 0,
+        }}
+      />
+
+      {/* Orbital decoration — single elegant arc with delicate gradient */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         aria-hidden="true"
         style={{ zIndex: 1 }}
       >
-        {/* Large arc */}
+        <defs>
+          <linearGradient id="hero-orbital-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#F4A7BB" stopOpacity="0" />
+            <stop offset="35%" stopColor="#F4A7BB" stopOpacity="0.14" />
+            <stop offset="65%" stopColor="#D8B4E2" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="#D8B4E2" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {/* Large orbital arc */}
         <ellipse
           cx="50%"
-          cy="50%"
-          rx="340"
-          ry="260"
+          cy="48%"
+          rx="350"
+          ry="250"
           fill="none"
-          stroke="rgba(216,180,226,0.06)"
+          stroke="url(#hero-orbital-grad)"
           strokeWidth="1"
-          strokeDasharray="4 12"
+          strokeDasharray="4 14"
         />
         {/* Smaller inner arc */}
         <ellipse
           cx="50%"
-          cy="50%"
-          rx="220"
-          ry="160"
+          cy="48%"
+          rx="230"
+          ry="165"
           fill="none"
-          stroke="rgba(244,167,187,0.04)"
-          strokeWidth="1"
+          stroke="rgba(216,180,226,0.04)"
+          strokeWidth="0.75"
         />
         {/* Tiny orbiting dot */}
-        <circle cx="calc(50% + 340px)" cy="50%" r="3" fill="rgba(244,167,187,0.5)">
+        <circle cx="calc(50% + 350px)" cy="48%" r="2.5" fill="rgba(244,167,187,0.5)">
           <animateTransform
             attributeName="transform"
             type="rotate"
-            from="0 50% 50%"
-            to="360 50% 50%"
-            dur="40s"
+            from="0 50% 48%"
+            to="360 50% 48%"
+            dur="45s"
             repeatCount="indefinite"
           />
         </circle>
       </svg>
+
+      {/* Hero cosmic sparkles — placed gently in whitespace */}
+      <CosmicSparkle
+        size={15}
+        className="absolute top-[16%] left-[12%] text-pink-soft/40 hidden md:block"
+        twinkle="slow"
+      />
+      <CosmicSparkle
+        size={17}
+        className="absolute top-[22%] right-[14%] text-purple-lilac/45 hidden sm:block"
+        twinkle="gentle"
+      />
+      <CosmicSparkle
+        size={13}
+        className="absolute top-[72%] left-[16%] text-purple-lilac/35 hidden md:block"
+        twinkle="gentle"
+      />
+      <CosmicSparkle
+        size={16}
+        className="absolute top-[68%] right-[15%] text-pink-soft/35 hidden sm:block"
+        twinkle="slow"
+      />
+
+      {/* 3 slightly brighter stars with soft atmospheric halos */}
+      <div
+        className="absolute top-[30%] left-[8%] w-1.5 h-1.5 rounded-full bg-pink-soft/50 shadow-[0_0_8px_1px_rgba(244,167,187,0.35)] hidden lg:block pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute top-[15%] right-[24%] w-1 h-1 rounded-full bg-purple-lilac/60 shadow-[0_0_6px_1px_rgba(232,213,255,0.4)] hidden md:block pointer-events-none"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute top-[62%] right-[8%] w-1.5 h-1.5 rounded-full bg-lavender/50 shadow-[0_0_8px_1px_rgba(216,180,226,0.3)] hidden lg:block pointer-events-none"
+        aria-hidden="true"
+      />
 
       <div className="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center">
         {/* Eyebrow */}
@@ -73,6 +130,9 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1 }}
           className="font-display text-6xl sm:text-7xl md:text-8xl text-purple-lilac font-light leading-none tracking-tight mb-6"
+          style={{
+            textShadow: '0 0 35px rgba(244,167,187,0.12), 0 0 70px rgba(192,132,252,0.07)',
+          }}
         >
           Shivangi
           <br />

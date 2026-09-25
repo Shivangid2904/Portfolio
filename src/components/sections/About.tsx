@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import SectionHeading from '../ui/SectionHeading'
+import CosmicSparkle from '../ui/CosmicSparkle'
 
 const interests = [
   'machine learning',
@@ -12,7 +13,14 @@ const interests = [
 
 export default function About() {
   return (
-    <section id="about" className="relative py-28 px-6" aria-label="About Shivangi">
+    <section id="about" className="relative py-28 px-6 overflow-hidden" aria-label="About Shivangi">
+      {/* Delicate celestial accent in whitespace */}
+      <CosmicSparkle
+        size={13}
+        className="absolute top-14 right-8 lg:right-16 text-pink-soft/30 hidden sm:block pointer-events-none"
+        twinkle="slow"
+      />
+
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16 items-start">
           {/* Left — text */}

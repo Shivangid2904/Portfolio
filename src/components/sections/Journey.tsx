@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import SectionHeading from '../ui/SectionHeading'
+import CosmicSparkle from '../ui/CosmicSparkle'
 
 interface TimelineItem {
   emoji: string
@@ -63,7 +64,14 @@ const timeline: TimelineItem[] = [
 
 export default function Journey() {
   return (
-    <section id="journey" className="relative py-28 px-6" aria-label="Experience and journey">
+    <section id="journey" className="relative py-28 px-6 overflow-hidden" aria-label="Experience and journey">
+      {/* Subtle cosmic accent in section margin */}
+      <CosmicSparkle
+        size={14}
+        className="absolute top-14 right-8 lg:right-16 text-purple-lilac/30 hidden sm:block pointer-events-none"
+        twinkle="gentle"
+      />
+
       <div className="max-w-4xl mx-auto">
         <SectionHeading
           title="My Journey"

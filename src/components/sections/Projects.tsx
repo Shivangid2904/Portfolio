@@ -1,11 +1,19 @@
 import { motion } from 'framer-motion'
 import SectionHeading from '../ui/SectionHeading'
 import ProjectCard from '../ui/ProjectCard'
+import CosmicSparkle from '../ui/CosmicSparkle'
 import { projects } from '../../data/projects'
 
 export default function Projects() {
   return (
-    <section id="projects" className="relative py-28 px-6" aria-label="Projects">
+    <section id="projects" className="relative py-28 px-6 overflow-hidden" aria-label="Projects">
+      {/* Subtle cosmic accent in section margin */}
+      <CosmicSparkle
+        size={14}
+        className="absolute top-14 right-8 lg:right-20 text-purple-lilac/30 hidden sm:block pointer-events-none"
+        twinkle="gentle"
+      />
+
       <div className="max-w-6xl mx-auto">
         <SectionHeading
           title="Things I've Built"
