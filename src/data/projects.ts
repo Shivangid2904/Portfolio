@@ -24,6 +24,8 @@ export interface Project {
   previewImg?: string
   /** Alt text for previewImg — required when previewImg is set */
   previewAlt?: string
+  /** URL slug for a dedicated case-study page (e.g. 'exolife') */
+  caseStudySlug?: string
 }
 
 export const projects: Project[] = [
@@ -64,20 +66,21 @@ export const projects: Project[] = [
     name: 'ExoLife',
     status: 'built',
     period: '2025',
-    category: 'Physics-Informed ML · Astrophysics',
+    category: 'Machine Learning · Astrophysics · Explainable AI',
     hook: 'Can machine learning find meaningful signals in the search for habitable worlds?',
     description:
-      "Physics-informed ML on 3,757 NASA exoplanets — 49 labelled habitable — creating a 75.7:1 class imbalance. Label-defining features were excluded to reduce target leakage. The proxy model reaches an F1 score of 0.636. Benchmarks five models using stratified 5-fold cross-validation and SHAP explanations to surface the most influential planetary features.",
-    tech: ['Python', 'scikit-learn', 'Random Forest', 'XGBoost', 'SHAP', 'pandas', 'Streamlit'],
+      'Analyzed 3,757 NASA exoplanets to assess habitability under severe class imbalance. Built a leakage-aware physics-informed proxy model, benchmarked five classifiers using stratified 5-fold cross-validation, and used SHAP to explain individual predictions.',
+    tech: ['Python', 'scikit-learn', 'Random Forest', 'XGBoost', 'SHAP', 'Streamlit'],
     github: 'https://github.com/Shivangid2904/ExoLife-Exoplanet-Habitability-Assessment',
     demo: 'https://exolife-exoplanet-habitability.onrender.com/',
     demoLabel: 'Live Demo',
     metrics: [
       { value: '3,757', label: 'exoplanets' },
-      { value: '49', label: 'habitable examples' },
+      { value: '49', label: 'labelled habitable' },
       { value: '75.7:1', label: 'class imbalance' },
       { value: 'F1 0.636', label: 'proxy model' },
     ],
+    caseStudySlug: 'exolife',
   },
   {
     id: 'awsfinops',

@@ -1,3 +1,4 @@
+import { Routes, Route, Navigate } from 'react-router-dom'
 import StarField from './components/ui/StarField'
 import SpaceTransition from './components/ui/SpaceTransition'
 import Navbar from './components/layout/Navbar'
@@ -9,8 +10,9 @@ import Toolkit from './components/sections/Toolkit'
 import Journey from './components/sections/Journey'
 import Exploring from './components/sections/Exploring'
 import Contact from './components/sections/Contact'
+import ExoLifeCaseStudy from './components/pages/ExoLifeCaseStudy'
 
-export default function App() {
+function PortfolioHome() {
   return (
     <div className="relative min-h-screen bg-deep">
       {/* Ambient background — radial gradient behind stars */}
@@ -48,5 +50,15 @@ export default function App() {
         <Footer />
       </div>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<PortfolioHome />} />
+      <Route path="/projects/exolife" element={<ExoLifeCaseStudy />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }

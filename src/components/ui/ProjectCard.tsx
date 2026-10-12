@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
-import { Github, ExternalLink } from 'lucide-react'
+import { Github, ExternalLink, BookOpen } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 import type { Project } from '../../data/projects'
 import StatusBadge from './StatusBadge'
 
@@ -10,6 +11,13 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   const shouldReduceMotion = useReducedMotion()
+  const navigate = useNavigate()
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (!project.caseStudySlug) return
+    if ((e.target as HTMLElement).closest('a, button')) return
+    navigate(`/projects/${project.caseStudySlug}`)
+  }
 
   return (
     <motion.article
@@ -18,7 +26,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
       whileHover={shouldReduceMotion ? undefined : { y: -3, transition: { duration: 0.18, ease: 'easeOut' } }}
-      className="group relative flex flex-col bg-card border border-lavender/10 rounded-2xl p-6 md:p-7 hover:border-pink-soft/25 transition-colors duration-200"
+      onClick={handleCardClick}
+      className={`group relative flex flex-col h-full bg-card border border-lavender/10 rounded-2xl p-6 md:p-7 hover:border-pink-soft/25 transition-colors duration-200 ${
+        project.caseStudySlug ? 'cursor-pointer' : ''
+      }`}
       style={{
         boxShadow: '0 1px 24px rgba(11, 8, 18, 0.5)',
       }}
@@ -52,23 +63,23 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             <div
               key={m.label}
               role="listitem"
-              className="flex flex-col items-center px-3 py-1.5 rounded-lg border border-lavender/12 bg-lavender/4"
+              className="flex flex-col items-center justify-center px-3 py-1.5 rounded-lg border border-lavender/12 bg-lavender/4 flex-1 min-w-[110px]"
             >
               <span className="font-body text-xs font-semibold text-pink-soft leading-tight">{m.value}</span>
-              <span className="font-body text-[10px] text-lavender/40 leading-tight mt-0.5">{m.label}</span>
+              <span className="font-body text-[10px] text-lavender/40 leading-tight mt-0.5 text-center">{m.label}</span>
             </div>
           ))}
         </div>
       )}
 
       {/* Description */}
-      <p className="font-body text-sm text-lavender/55 leading-relaxed mb-5 flex-1">
+      <p className="font-body text-sm text-lavender/55 leading-relaxed mb-4">
         {project.description}
       </p>
 
       {/* Preview screenshot — only rendered when a verified asset exists */}
       {project.previewImg && (
-        <div className="mb-5 rounded-xl overflow-hidden border border-lavender/8">
+        <div className="mb-4 rounded-xl overflow-hidden border border-lavender/8">
           <img
             src={project.previewImg}
             alt={project.previewAlt ?? `${project.name} preview`}
@@ -79,47 +90,63 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
       )}
 
-      {/* Tech pills */}
-      <div className="flex flex-wrap gap-1.5 mb-5">
-        {project.tech.map((t) => (
-          <span
-            key={t}
-            className="font-body text-xs px-2.5 py-1 rounded-full border border-lavender/12 bg-lavender/4 text-lavender/60"
-          >
-            {t}
-          </span>
-        ))}
-      </div>
+      {/* Bottom section anchored with mt-auto for aligned footers */}
+      <div className="mt-auto pt-2">
+        {/* Tech pills */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {project.tech.map((t) => (
+            <span
+              key={t}
+              className="font-body text-xs px-2.5 py-1 rounded-full border border-lavender/12 bg-lavender/4 text-lavender/60"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
 
-      {/* Links */}
-      <div className="flex items-center gap-3 pt-4 border-t border-lavender/8 flex-wrap">
-        {project.github && (
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 font-body text-xs text-lavender/50 hover:text-pink-soft transition-colors duration-200"
-            aria-label={`View ${project.name} on GitHub`}
-          >
-            <Github size={14} />
-            GitHub
-          </a>
-        )}
-        {project.demo && (
-          <a
-            href={project.demo}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 font-body text-xs font-medium text-pink-soft border border-pink-soft/30 bg-pink-soft/8 rounded-full px-3 py-1 hover:bg-pink-soft/15 transition-colors duration-200"
-            aria-label={`${project.demoLabel ?? 'Live demo'} for ${project.name}`}
-          >
-            <ExternalLink size={13} />
-            {project.demoLabel ?? 'Live Demo'}
-          </a>
-        )}
-        <span className="ml-auto font-body text-xs text-lavender/30">{project.period}</span>
+        {/* Links */}
+        <div className="flex items-center gap-3 pt-4 border-t border-lavender/8 flex-wrap">
+          {project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 font-body text-xs text-lavender/50 hover:text-pink-soft transition-colors duration-200"
+              aria-label={`View ${project.name} on GitHub`}
+            >
+              <Github size={14} />
+              GitHub
+            </a>
+          )}
+          {project.demo && (
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 font-body text-xs font-medium text-pink-soft border border-pink-soft/30 bg-pink-soft/8 rounded-full px-3 py-1 hover:bg-pink-soft/15 transition-colors duration-200"
+              aria-label={`${project.demoLabel ?? 'Live demo'} for ${project.name}`}
+            >
+              <ExternalLink size={13} />
+              {project.demoLabel ?? 'Live Demo'}
+            </a>
+          )}
+          {project.caseStudySlug ? (
+            <Link
+              to={`/projects/${project.caseStudySlug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 font-body text-xs font-medium text-pink-soft/90 hover:text-pink-soft transition-colors duration-200 ml-auto group/cs"
+              aria-label={`Explore ${project.name} case study`}
+            >
+              <BookOpen size={13} className="text-pink-soft/70 group-hover/cs:text-pink-soft transition-colors" />
+              <span>Case Study &rarr;</span>
+            </Link>
+          ) : (
+            <span className="ml-auto font-body text-xs text-lavender/30">{project.period}</span>
+          )}
+        </div>
       </div>
     </motion.article>
   )
 }
-
