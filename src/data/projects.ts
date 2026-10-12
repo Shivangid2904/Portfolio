@@ -124,6 +124,7 @@ export const projects: Project[] = [
     metrics: [
       { value: '4,324', label: 'missions in dataset' },
     ],
+    caseStudySlug: 'orbitiq',
   },
   {
     id: 'cve',
