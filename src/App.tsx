@@ -11,6 +11,7 @@ import Journey from './components/sections/Journey'
 import Exploring from './components/sections/Exploring'
 import Contact from './components/sections/Contact'
 import ExoLifeCaseStudy from './components/pages/ExoLifeCaseStudy'
+import CVECaseStudy from './components/pages/CVECaseStudy'
 
 function PortfolioHome() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<PortfolioHome />} />
       <Route path="/projects/exolife" element={<ExoLifeCaseStudy />} />
+      <Route path="/projects/cve-vulnerability-intelligence" element={<CVECaseStudy />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

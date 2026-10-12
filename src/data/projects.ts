@@ -128,6 +128,7 @@ export const projects: Project[] = [
       "A simulated MSSP-style vulnerability intelligence platform that processes a sample CVE dataset, performs keyword-based severity classification, matches vulnerabilities against client environments, and sends alerts using AWS services. Lambda handles processing, DynamoDB stores vulnerability records, EventBridge manages scheduling, and SNS delivers notifications.",
     tech: ['AWS Lambda', 'S3', 'DynamoDB', 'EventBridge', 'SNS', 'Cognito', 'IAM', 'Python'],
     github: 'https://github.com/Shivangid2904/cve-vulnerability-intelligence-platform',
+    caseStudySlug: 'cve-vulnerability-intelligence',
   },
   {
     id: 'waddler',
