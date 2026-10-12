@@ -91,14 +91,15 @@ export const projects: Project[] = [
     category: 'Serverless FinOps · Cloud Analytics',
     hook: 'Automated cloud cost analytics — so your billing data works for you, not against you.',
     description:
-      "Built a serverless AWS pipeline to process and analyze cloud cost data using AWS Cost and Usage Reports, S3, Glue, Athena, Lambda, and EventBridge. Implemented in an AWS Academy lab environment (Nov – Dec 2025), the project focuses on automated cloud cost analytics and scheduled FinOps monitoring.",
-    tech: ['AWS Cost & Usage Reports', 'Amazon S3', 'AWS Glue', 'Amazon Athena', 'AWS Lambda', 'Amazon EventBridge', 'AWS IAM', 'Python', 'SQL'],
-    github: 'https://github.com/Shivangid2904/AWS-FinOps-Analytics-Pipeline',
+      'An AWS FinOps automation project that analyzes Cost and Usage Report data using Glue and Athena, identifies potentially underutilized EC2 resources, and demonstrates scheduled serverless remediation using Lambda and EventBridge.',
+    tech: ['AWS CUR 2.0', 'Amazon S3', 'AWS Glue', 'Amazon Athena', 'AWS Lambda', 'Amazon EventBridge', 'Amazon CloudWatch', 'AWS IAM', 'SQL', 'Python'],
+    github: 'https://github.com/Shivangid2904/aws-finops-automation-engine',
     metrics: [
-      { value: 'CUR → S3', label: 'ingestion' },
-      { value: 'Glue + Athena', label: 'catalog & query' },
-      { value: 'Lambda + EventBridge', label: 'automation' },
+      { value: 'CUR 2.0 → S3', label: 'Parquet ingestion' },
+      { value: 'Glue + Athena', label: 'catalog & SQL' },
+      { value: 'Lambda + EventBridge', label: '6h schedule' },
     ],
+    caseStudySlug: 'aws-finops',
   },
   {
     id: 'orbitiq',

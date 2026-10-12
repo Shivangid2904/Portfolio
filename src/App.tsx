@@ -12,6 +12,7 @@ import Exploring from './components/sections/Exploring'
 import Contact from './components/sections/Contact'
 import ExoLifeCaseStudy from './components/pages/ExoLifeCaseStudy'
 import CVECaseStudy from './components/pages/CVECaseStudy'
+import FinOpsCaseStudy from './components/pages/FinOpsCaseStudy'
 
 function PortfolioHome() {
   return (
@@ -60,6 +61,7 @@ export default function App() {
       <Route path="/" element={<PortfolioHome />} />
       <Route path="/projects/exolife" element={<ExoLifeCaseStudy />} />
       <Route path="/projects/cve-vulnerability-intelligence" element={<CVECaseStudy />} />
+      <Route path="/projects/aws-finops" element={<FinOpsCaseStudy />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
