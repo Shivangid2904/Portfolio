@@ -114,7 +114,7 @@ export default function OrbitIQCaseStudy() {
             transition={{ duration: 0.4, delay: 0.05 }}
             className="font-display text-3xl sm:text-4xl md:text-5xl font-semibold text-lavender mb-3 leading-tight"
           >
-            🪐 OrbitIQ
+            OrbitIQ
           </motion.h1>
 
           <motion.p
@@ -143,7 +143,7 @@ export default function OrbitIQCaseStudy() {
             initial={reduced ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.18 }}
-            className="font-body text-sm md:text-base text-lavender/60 max-w-2xl leading-relaxed mb-8"
+            className="font-body text-sm md:text-base text-lavender/75 max-w-2xl leading-relaxed mb-8"
           >
             A data exploration project analyzing 4,324+ historical space missions from organizations including ISRO, NASA, SpaceX, Roscosmos, CASC, and Arianespace. Transforms raw launch records into structured insights using SQL, PostgreSQL, and Python, with an interactive Power BI dashboard currently in development.
           </motion.p>
